@@ -1,0 +1,733 @@
+==================================================================
+ FULL MACHINE MODEL / RUNTIME INVENTORY
+==================================================================
+generated : Wed Oct  7 03:09:45 EDT 2026
+host      : DESKTOP-D23P7Q4
+user      : l3ung
+os/kernel : Linux 6.6.87.2-microsoft-standard-WSL2 x86_64
+wsl       : yes
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+scan roots: /
+
+===== 1. MACHINE / GPU =====
+ Intel(R) Core(TM) Ultra 5 225F
+cores: 8   mem: 15.6 GiB
+index, name, memory.total [MiB], driver_version
+0, NVIDIA GeForce RTX 5070 Ti, 16303 MiB, 610.47
+CUDA Version: 13.3
+===== 2. DRIVES / MOUNTS =====
+Filesystem      Size  Used Avail Use% Mounted on
+drivers         922G  733G  190G  80% /usr/lib/wsl/drivers
+/dev/sdd       1007G  361G  595G  38% /
+rootfs          7.9G  2.7M  7.9G   1% /init
+C:\             922G  733G  190G  80% /mnt/c
+D:\             466G   86G  381G  19% /mnt/d
+snapfuse         74M   74M     0 100% /snap/core22/2437
+snapfuse         67M   67M     0 100% /snap/core24/1643
+snapfuse         67M   67M     0 100% /snap/core24/2124
+snapfuse         51M   51M     0 100% /snap/snapd/27738
+snapfuse         45M   45M     0 100% /snap/snapd/28254
+===== 3. ALL WEIGHT-LIKE FILES EVERYWHERE =====
+units scanned: 3862   (tree split into non-overlapping folders, depth 3)
+
+total weight-like files found: 32917
+-- biggest 300 (anything silently big is what you forgot you had):
+   27.1 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/checkpoints/ltx-2.3-22b-dev-fp8.safetensors
+   27.1 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/checkpoints/ltx-2.3-22b-dev-fp8.safetensors
+   27.1 GB  /home/l3ung/ComfyUI/models/checkpoints/ltx-2.3-22b-dev-fp8.safetensors
+   15.5 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/diffusion_models/Wan2_1-I2V-14B-480p_fp8_e4m3fn_scaled_KJ.safetensors
+   15.5 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/diffusion_models/Wan2_1-I2V-14B-480p_fp8_e4m3fn_scaled_KJ.safetensors
+   15.5 GB  /home/l3ung/ComfyUI/models/diffusion_models/Wan2_1-I2V-14B-480p_fp8_e4m3fn_scaled_KJ.safetensors
+   13.3 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/diffusion_models/wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors
+   13.3 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/diffusion_models/wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors
+   13.3 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/diffusion_models/wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors
+   13.3 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/diffusion_models/wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors
+   13.3 GB  /home/l3ung/ComfyUI/models/diffusion_models/wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors
+   13.3 GB  /home/l3ung/ComfyUI/models/diffusion_models/wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors
+   13.3 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/diffusion_models/wan2.2_t2v_low_noise_14B_fp8_scaled.safetensors
+   13.3 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/diffusion_models/wan2.2_t2v_low_noise_14B_fp8_scaled.safetensors
+   13.3 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/diffusion_models/wan2.2_t2v_high_noise_14B_fp8_scaled.safetensors
+   13.3 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/diffusion_models/wan2.2_t2v_high_noise_14B_fp8_scaled.safetensors
+   13.3 GB  /home/l3ung/ComfyUI/models/diffusion_models/wan2.2_t2v_low_noise_14B_fp8_scaled.safetensors
+   13.3 GB  /home/l3ung/ComfyUI/models/diffusion_models/wan2.2_t2v_high_noise_14B_fp8_scaled.safetensors
+   11.5 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/diffusion_models/z_image_turbo_bf16.safetensors
+   11.5 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/diffusion_models/z_image_turbo_bf16.safetensors
+   11.5 GB  /home/l3ung/ComfyUI/models/diffusion_models/z_image_turbo_bf16.safetensors
+    9.3 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/diffusion_models/wan2.2_ti2v_5B_fp16.safetensors
+    9.3 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/diffusion_models/wan2.2_ti2v_5B_fp16.safetensors
+    9.3 GB  /home/l3ung/ComfyUI/models/diffusion_models/wan2.2_ti2v_5B_fp16.safetensors
+    8.8 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/clip/gemma_3_12B_it_fp4_mixed.safetensors
+    8.8 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/clip/gemma_3_12B_it_fp4_mixed.safetensors
+    8.8 GB  /home/l3ung/ComfyUI/models/clip/gemma_3_12B_it_fp4_mixed.safetensors
+    7.5 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/text_encoders/qwen_3_4b.safetensors
+    7.5 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/text_encoders/qwen_3_4b.safetensors
+    7.5 GB  /home/l3ung/ComfyUI/models/text_encoders/qwen_3_4b.safetensors
+    6.3 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors
+    6.3 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors
+    6.3 GB  /home/l3ung/ComfyUI/models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors
+    5.3 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/diffusion_models/causal_forcing-framewise.safetensors
+    5.3 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/diffusion_models/causal_forcing-framewise.safetensors
+    5.3 GB  /home/l3ung/ComfyUI/models/diffusion_models/causal_forcing-framewise.safetensors
+    4.8 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/clip/t5xxl_fp8_e4m3fn_scaled.safetensors
+    4.8 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/clip/t5xxl_fp8_e4m3fn_scaled.safetensors
+    4.8 GB  /home/l3ung/ComfyUI/models/clip/t5xxl_fp8_e4m3fn_scaled.safetensors
+    4.8 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/model_patches/wan2.1_infiniteTalk_multi_fp16.safetensors
+    4.8 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/model_patches/wan2.1_infiniteTalk_multi_fp16.safetensors
+    4.8 GB  /home/l3ung/ComfyUI/models/model_patches/wan2.1_infiniteTalk_multi_fp16.safetensors
+    3.6 GB  /mnt/wslg/distro/home/l3ung/gemma-avatar/models/qwen3-tts-gguf/qwen-talker-1.7b-customvoice-BF16.gguf
+    3.6 GB  /mnt/wslg/distro/home/l3ung/gemma-avatar/models/qwen3-tts-gguf/qwen-talker-1.7b-customvoice-BF16.gguf
+    3.6 GB  /home/l3ung/gemma-avatar/models/qwen3-tts-gguf/qwen-talker-1.7b-customvoice-BF16.gguf
+    2.6 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/loras/ltx_2.3_22b_distilled_1.1_lora_dynamic_fro09_avg_rank_111_bf16.safetensors
+    2.6 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/loras/ltx_2.3_22b_distilled_1.1_lora_dynamic_fro09_avg_rank_111_bf16.safetensors
+    2.6 GB  /home/l3ung/ComfyUI/models/loras/ltx_2.3_22b_distilled_1.1_lora_dynamic_fro09_avg_rank_111_bf16.safetensors
+    1.6 GB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_karaoke_becruily.ckpt
+    1.6 GB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_karaoke_becruily.ckpt
+    1.6 GB  /home/l3ung/UVR5-UI/models/mel_band_roformer_karaoke_becruily.ckpt
+    1.6 GB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/melband_roformer_instvox_duality_v2.ckpt
+    1.6 GB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/melband_roformer_instvox_duality_v2.ckpt
+    1.6 GB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/melband_roformer_instvoc_duality_v1.ckpt
+    1.6 GB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/melband_roformer_instvoc_duality_v1.ckpt
+    1.6 GB  /home/l3ung/UVR5-UI/models/melband_roformer_instvox_duality_v2.ckpt
+    1.6 GB  /home/l3ung/UVR5-UI/models/melband_roformer_instvoc_duality_v1.ckpt
+    1.6 GB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/melband_roformer_big_beta6x.ckpt
+    1.6 GB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/melband_roformer_big_beta6x.ckpt
+    1.6 GB  /home/l3ung/UVR5-UI/models/melband_roformer_big_beta6x.ckpt
+    1.5 GB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/melband_roformer_inst_v2.ckpt
+    1.5 GB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/melband_roformer_inst_v2.ckpt
+    1.5 GB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/melband_roformer_big_beta4.ckpt
+    1.5 GB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/melband_roformer_big_beta4.ckpt
+    1.5 GB  /home/l3ung/UVR5-UI/models/melband_roformer_inst_v2.ckpt
+    1.5 GB  /home/l3ung/UVR5-UI/models/melband_roformer_big_beta4.ckpt
+    1.5 GB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/melband_roformer_big_beta6.ckpt
+    1.5 GB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/melband_roformer_big_beta6.ckpt
+    1.5 GB  /home/l3ung/UVR5-UI/models/melband_roformer_big_beta6.ckpt
+    1.4 GB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/melband_roformer_big_beta5e.ckpt
+    1.4 GB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/melband_roformer_big_beta5e.ckpt
+    1.4 GB  /home/l3ung/UVR5-UI/models/melband_roformer_big_beta5e.ckpt
+    1.4 GB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/MelBandRoformerBigSYHFTV1.ckpt
+    1.4 GB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/MelBandRoformerBigSYHFTV1.ckpt
+    1.4 GB  /home/l3ung/UVR5-UI/models/MelBandRoformerBigSYHFTV1.ckpt
+    1.3 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/vae/wan2.2_vae.safetensors
+    1.3 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/vae/wan2.2_vae.safetensors
+    1.3 GB  /home/l3ung/ComfyUI/models/vae/wan2.2_vae.safetensors
+    1.1 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/loras/wan2.2_t2v_lightx2v_4steps_lora_v1.1_low_noise.safetensors
+    1.1 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/loras/wan2.2_t2v_lightx2v_4steps_lora_v1.1_low_noise.safetensors
+    1.1 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/loras/wan2.2_t2v_lightx2v_4steps_lora_v1.1_high_noise.safetensors
+    1.1 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/loras/wan2.2_t2v_lightx2v_4steps_lora_v1.1_high_noise.safetensors
+    1.1 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/loras/wan2.2_i2v_lightx2v_4steps_lora_v1_low_noise.safetensors
+    1.1 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/loras/wan2.2_i2v_lightx2v_4steps_lora_v1_low_noise.safetensors
+    1.1 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/loras/wan2.2_i2v_lightx2v_4steps_lora_v1_high_noise.safetensors
+    1.1 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/loras/wan2.2_i2v_lightx2v_4steps_lora_v1_high_noise.safetensors
+    1.1 GB  /home/l3ung/ComfyUI/models/loras/wan2.2_t2v_lightx2v_4steps_lora_v1.1_low_noise.safetensors
+    1.1 GB  /home/l3ung/ComfyUI/models/loras/wan2.2_t2v_lightx2v_4steps_lora_v1.1_high_noise.safetensors
+    1.1 GB  /home/l3ung/ComfyUI/models/loras/wan2.2_i2v_lightx2v_4steps_lora_v1_low_noise.safetensors
+    1.1 GB  /home/l3ung/ComfyUI/models/loras/wan2.2_i2v_lightx2v_4steps_lora_v1_high_noise.safetensors
+    1.1 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/loras/ltx-2.3-id-lora-talkvid-3k.safetensors
+    1.1 GB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/loras/ltx-2.3-id-lora-talkvid-3k.safetensors
+    1.1 GB  /home/l3ung/ComfyUI/models/loras/ltx-2.3-id-lora-talkvid-3k.safetensors
+  961.1 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/model_mel_band_roformer_ep_3005_sdr_11.4360.ckpt
+  961.1 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/model_mel_band_roformer_ep_3005_sdr_11.4360.ckpt
+  961.1 MB  /home/l3ung/UVR5-UI/models/model_mel_band_roformer_ep_3005_sdr_11.4360.ckpt
+  949.6 MB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/latent_upscale_models/ltx-2.3-spatial-upscaler-x2-1.1.safetensors
+  949.6 MB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/latent_upscale_models/ltx-2.3-spatial-upscaler-x2-1.1.safetensors
+  949.6 MB  /home/l3ung/ComfyUI/models/latent_upscale_models/ltx-2.3-spatial-upscaler-x2-1.1.safetensors
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_vocals_becruily.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_vocals_becruily.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/dereverb_mel_band_roformer_less_aggressive_anvuew_sdr_18.8050.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/dereverb_mel_band_roformer_less_aggressive_anvuew_sdr_18.8050.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/dereverb_mel_band_roformer_anvuew_sdr_19.1729.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/dereverb_mel_band_roformer_anvuew_sdr_19.1729.ckpt
+  870.8 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_vocals_becruily.ckpt
+  870.8 MB  /home/l3ung/UVR5-UI/models/dereverb_mel_band_roformer_less_aggressive_anvuew_sdr_18.8050.ckpt
+  870.8 MB  /home/l3ung/UVR5-UI/models/dereverb_mel_band_roformer_anvuew_sdr_19.1729.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/vocals_mel_band_roformer.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/vocals_mel_band_roformer.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_becruily.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_becruily.ckpt
+  870.8 MB  /home/l3ung/UVR5-UI/models/vocals_mel_band_roformer.ckpt
+  870.8 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_becruily.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/melband_roformer_inst_v1e.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/melband_roformer_inst_v1e.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_bleed_suppressor_v1.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_bleed_suppressor_v1.ckpt
+  870.8 MB  /home/l3ung/UVR5-UI/models/melband_roformer_inst_v1e.ckpt
+  870.8 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_bleed_suppressor_v1.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_kim_ft2_bleedless_unwa.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_kim_ft2_bleedless_unwa.ckpt
+  870.8 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_kim_ft2_bleedless_unwa.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/melband_roformer_inst_v1.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/melband_roformer_inst_v1.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_kim_ft_unwa.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_kim_ft_unwa.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_kim_ft2_unwa.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_kim_ft2_unwa.ckpt
+  870.8 MB  /home/l3ung/UVR5-UI/models/melband_roformer_inst_v1.ckpt
+  870.8 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_kim_ft_unwa.ckpt
+  870.8 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_kim_ft2_unwa.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/dereverb_mel_band_roformer_mono_anvuew.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/dereverb_mel_band_roformer_mono_anvuew.ckpt
+  870.8 MB  /home/l3ung/UVR5-UI/models/dereverb_mel_band_roformer_mono_anvuew.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/denoise_mel_band_roformer_aufr33_sdr_27.9959.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/denoise_mel_band_roformer_aufr33_sdr_27.9959.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/denoise_mel_band_roformer_aufr33_aggr_sdr_27.9768.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/denoise_mel_band_roformer_aufr33_aggr_sdr_27.9768.ckpt
+  870.8 MB  /home/l3ung/UVR5-UI/models/denoise_mel_band_roformer_aufr33_sdr_27.9959.ckpt
+  870.8 MB  /home/l3ung/UVR5-UI/models/denoise_mel_band_roformer_aufr33_aggr_sdr_27.9768.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_karaoke_aufr33_viperx_sdr_10.1956.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_karaoke_aufr33_viperx_sdr_10.1956.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_crowd_aufr33_viperx_sdr_8.7144.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_crowd_aufr33_viperx_sdr_8.7144.ckpt
+  870.8 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_karaoke_aufr33_viperx_sdr_10.1956.ckpt
+  870.8 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_crowd_aufr33_viperx_sdr_8.7144.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/MelBandRoformerSYHFT.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/MelBandRoformerSYHFT.ckpt
+  870.8 MB  /home/l3ung/UVR5-UI/models/MelBandRoformerSYHFT.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/MelBandRoformerSYHFTV2.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/MelBandRoformerSYHFTV2.ckpt
+  870.8 MB  /home/l3ung/UVR5-UI/models/MelBandRoformerSYHFTV2.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/melband_roformer_inst_v1e_plus.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/melband_roformer_inst_v1e_plus.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/melband_roformer_inst_v1_plus.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/melband_roformer_inst_v1_plus.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_vocal_fullness_aname.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_vocal_fullness_aname.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_kim_ft3_unwa.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_kim_ft3_unwa.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_karaoke_gabox_v2.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_karaoke_gabox_v2.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/MelBandRoformerSYHFTV3Epsilon.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/MelBandRoformerSYHFTV3Epsilon.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/MelBandRoformerSYHFTV2.5.ckpt
+  870.8 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/MelBandRoformerSYHFTV2.5.ckpt
+  870.8 MB  /home/l3ung/UVR5-UI/models/melband_roformer_inst_v1e_plus.ckpt
+  870.8 MB  /home/l3ung/UVR5-UI/models/melband_roformer_inst_v1_plus.ckpt
+  870.8 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_vocal_fullness_aname.ckpt
+  870.8 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_kim_ft3_unwa.ckpt
+  870.8 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_karaoke_gabox_v2.ckpt
+  870.8 MB  /home/l3ung/UVR5-UI/models/MelBandRoformerSYHFTV3Epsilon.ckpt
+  870.8 MB  /home/l3ung/UVR5-UI/models/MelBandRoformerSYHFTV2.5.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_vocals_v2_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_vocals_v2_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_vocals_fv6_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_vocals_fv6_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_fv7z_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_fv7z_gabox.ckpt
+  870.7 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_vocals_v2_gabox.ckpt
+  870.7 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_vocals_fv6_gabox.ckpt
+  870.7 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_fv7z_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_vocals_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_vocals_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_vocals_fv5_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_vocals_fv5_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_vocals_fv4_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_vocals_fv4_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_vocals_fv3_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_vocals_fv3_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_vocals_fv2_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_vocals_fv2_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_vocals_fv1_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_vocals_fv1_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_karaoke_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_karaoke_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_instv8n_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_instv8n_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_instv8_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_instv8_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_instv7n_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_instv7n_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_instv7_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_instv7_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_instv6n_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_instv6n_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_instv6_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_instv6_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_instv5n_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_instv5n_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_instv5_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_instv5_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_fvx_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_fvx_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_fv8_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_fv8_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_fullness_v3_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_fullness_v3_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_fullness_v2_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_fullness_v2_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_fullness_v1_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_fullness_v1_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_fullness_noise_v4_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_fullness_noise_v4_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_bleedless_v3_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_bleedless_v3_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_bleedless_v2_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_bleedless_v2_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_bleedless_v1_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_bleedless_v1_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_3_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_3_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_2_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_2_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_denoise_debleed_gabox.ckpt
+  870.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/mel_band_roformer_denoise_debleed_gabox.ckpt
+  870.7 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_vocals_gabox.ckpt
+  870.7 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_vocals_fv5_gabox.ckpt
+  870.7 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_vocals_fv4_gabox.ckpt
+  870.7 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_vocals_fv3_gabox.ckpt
+  870.7 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_vocals_fv2_gabox.ckpt
+  870.7 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_vocals_fv1_gabox.ckpt
+  870.7 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_karaoke_gabox.ckpt
+  870.7 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_instv8n_gabox.ckpt
+  870.7 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_instv8_gabox.ckpt
+  870.7 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_instv7n_gabox.ckpt
+  870.7 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_instv7_gabox.ckpt
+  870.7 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_instv6n_gabox.ckpt
+  870.7 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_instv6_gabox.ckpt
+  870.7 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_instv5n_gabox.ckpt
+  870.7 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_instv5_gabox.ckpt
+  870.7 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_gabox.ckpt
+  870.7 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_fvx_gabox.ckpt
+  870.7 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_fv8_gabox.ckpt
+  870.7 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_fullness_v3_gabox.ckpt
+  870.7 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_fullness_v2_gabox.ckpt
+  870.7 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_fullness_v1_gabox.ckpt
+  870.7 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_fullness_noise_v4_gabox.ckpt
+  870.7 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_bleedless_v3_gabox.ckpt
+  870.7 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_bleedless_v2_gabox.ckpt
+  870.7 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_bleedless_v1_gabox.ckpt
+  870.7 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_3_gabox.ckpt
+  870.7 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_instrumental_2_gabox.ckpt
+  870.7 MB  /home/l3ung/UVR5-UI/models/mel_band_roformer_denoise_debleed_gabox.ckpt
+  797.3 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/dereverb-echo_mel_band_roformer_sdr_10.0169.ckpt
+  797.3 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/dereverb-echo_mel_band_roformer_sdr_10.0169.ckpt
+  797.3 MB  /home/l3ung/UVR5-UI/models/dereverb-echo_mel_band_roformer_sdr_10.0169.ckpt
+  797.3 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/aspiration_mel_band_roformer_sdr_18.9845.ckpt
+  797.3 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/aspiration_mel_band_roformer_sdr_18.9845.ckpt
+  797.3 MB  /home/l3ung/UVR5-UI/models/aspiration_mel_band_roformer_sdr_18.9845.ckpt
+  797.3 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/aspiration_mel_band_roformer_less_aggr_sdr_18.1201.ckpt
+  797.3 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/aspiration_mel_band_roformer_less_aggr_sdr_18.1201.ckpt
+  797.3 MB  /home/l3ung/UVR5-UI/models/aspiration_mel_band_roformer_less_aggr_sdr_18.1201.ckpt
+  703.8 MB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/loras/lightx2v_I2V_14B_480p_cfg_step_distill_rank64_bf16.safetensors
+  703.8 MB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/loras/lightx2v_I2V_14B_480p_cfg_step_distill_rank64_bf16.safetensors
+  703.8 MB  /home/l3ung/ComfyUI/models/loras/lightx2v_I2V_14B_480p_cfg_step_distill_rank64_bf16.safetensors
+  631.2 MB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/geometry_estimation/moge_2_vitl_normal_fp16.safetensors
+  631.2 MB  /mnt/wslg/distro/home/l3ung/ComfyUI/models/geometry_estimation/moge_2_vitl_normal_fp16.safetensors
+  631.2 MB  /home/l3ung/ComfyUI/models/geometry_estimation/moge_2_vitl_normal_fp16.safetensors
+  609.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/model_bs_roformer_ep_317_sdr_12.9755.ckpt
+  609.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/model_bs_roformer_ep_317_sdr_12.9755.ckpt
+  609.7 MB  /home/l3ung/UVR5-UI/models/model_bs_roformer_ep_317_sdr_12.9755.ckpt
+  609.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/bs_roformer_vocals_revive_v3e_unwa.ckpt
+  609.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/bs_roformer_vocals_revive_v3e_unwa.ckpt
+  609.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/bs_roformer_vocals_revive_v2_unwa.ckpt
+  609.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/bs_roformer_vocals_revive_v2_unwa.ckpt
+  609.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/bs_roformer_vocals_revive_unwa.ckpt
+  609.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/bs_roformer_vocals_revive_unwa.ckpt
+  609.7 MB  /home/l3ung/UVR5-UI/models/bs_roformer_vocals_revive_v3e_unwa.ckpt
+  609.7 MB  /home/l3ung/UVR5-UI/models/bs_roformer_vocals_revive_v2_unwa.ckpt
+  609.7 MB  /home/l3ung/UVR5-UI/models/bs_roformer_vocals_revive_unwa.ckpt
+  609.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/model_bs_roformer_ep_368_sdr_12.9628.ckpt
+  609.7 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/model_bs_roformer_ep_368_sdr_12.9628.ckpt
+  609.7 MB  /home/l3ung/UVR5-UI/models/model_bs_roformer_ep_368_sdr_12.9628.ckpt
+  609.6 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/bs_roformer_vocals_gabox.ckpt
+  609.6 MB  /mnt/wslg/distro/home/l3ung/UVR5-UI/models/bs_roformer_vocals_gabox.ckpt
+  609.6 MB  /home/l3ung/UVR5-UI/models/bs_roformer_vocals_gabox.ckpt
+-- counts by extension:
+  19614 bin
+   9248 onnx
+   2521 msgpack
+    649 npz
+    275 ckpt
+    241 pth
+    215 pt
+    114 safetensors
+     28 tflite
+      6 gguf
+      3 jit
+      3 h5
+===== 4. TORCH HUB (silero VAD lives here) =====
+-- /home/l3ung/.cache/torch (35M)
+/home/l3ung/.cache/torch/hub/snakers4_silero-vad_master
+/home/l3ung/.cache/torch/hub/snakers4_silero-vad_master/src/silero_vad
+/home/l3ung/.cache/torch/hub/snakers4_silero-vad_master/silero-vad.ipynb
+/home/l3ung/.cache/torch/hub/snakers4_silero-vad_master/files/silero_logo.jpg
+===== 5. HUGGINGFACE / MODELSCOPE / OTHER CACHES =====
+-- /home/l3ung/.cache/huggingface (15G)
+models--Qwen--Qwen3-4B-Instruct-2507
+models--Qwen--Qwen3-TTS-12Hz-1.7B-CustomVoice
+models--Serveurperso--Qwen3-TTS-GGUF
+models--nvidia--parakeet-tdt-0.6b-v3
+models--nvidia--parakeet-tdt-1.1b
+   NEMO: /home/l3ung/.cache/huggingface/hub/models--nvidia--parakeet-tdt-0.6b-v3/snapshots/7c35754d166cca382ad1e53e68b01e7c575f3a1d/parakeet-tdt-0.6b-v3.nemo
+   NEMO: /home/l3ung/.cache/huggingface/hub/models--nvidia--parakeet-tdt-0.6b-v3/snapshots/541d1f99c6b0c3cd0b11a95167540bb8edefd82b/parakeet-tdt-0.6b-v3.nemo
+-- HF-style model caches found anywhere on the scanned drives:
+/home/l3ung/.cache/huggingface/hub
+===== 6. LOCAL MODEL RUNNERS (binaries + their model stores) =====
+  ollama                 /usr/local/bin/ollama
+  piper                  /home/l3ung/miniconda3/bin/piper
+  hf                     /home/l3ung/.local/bin/hf
+  huggingface-cli        /home/l3ung/miniconda3/bin/huggingface-cli
+  conda                  /home/l3ung/miniconda3/bin/conda
+  python3                /home/l3ung/miniconda3/bin/python3
+  nvcc                   /usr/bin/nvcc
+  cmake                  /usr/bin/cmake
+  ffmpeg                 /usr/bin/ffmpeg
+-- ollama store: 12K
+-- conda envs:
+
+# conda environments:
+#
+# * -> active
+# + -> frozen
+                         /home/l3ung/UVR5-UI/env
+base                 *   /home/l3ung/miniconda3
+
+===== 6b. WINDOWS SIDE, SEEN FROM WSL (/mnt/*) =====
+-- mounts present under /mnt:
+   c
+   d
+   wsl
+   wslg
+-- Windows profile: /mnt/c/Users/l3ung
+   [98G] .ollama/models
+   [9.1G] .cache/huggingface/hub
+===== 6c. THIS PROJECT'S OWN FOLDERS (every copy on disk) =====
+== /home/l3ung/speech-to-speech-0.2.10
+   [5.9G] .venv/
+   venv pkgs: kokoro-0.9.4 torch-2.11.0 torchaudio-2.11.0 transformers-4.57.3 
+===== 7. PYTHON ENVIRONMENTS (old GPU/audio envs you forgot) =====
+-- /home/l3ung/.venvs/csm
+-- /home/l3ung/speech-to-speech-0.2.10/.venv
+   pkgs: kokoro-0.9.4 misaki-0.9.4 onnxruntime-1.23.2 torch-2.11.0 torchaudio-2.11.0 transformers-4.57.3 
+   *** has the speech-to-speech CLI ***
+-- /home/l3ung/venvs/gemma-avatar-s2s
+   pkgs: onnxruntime-1.27.0 torch-2.13.0 torchaudio-2.11.0 transformers-4.57.3 
+   *** has the speech-to-speech CLI ***
+-- /home/l3ung/venv
+-- /home/l3ung/ComfyUI/comfyenv
+   pkgs: torch-2.12.0 torchaudio-2.11.0 torchsde-0.2.6 torchvision-0.27.0 transformers-5.9.0 
+-- /home/l3ung/ComfyUI/.venv
+   pkgs: torchsde-0.2.6 transformers-5.9.0 
+===== 8. FOLDERS NAMED AFTER MODELS =====
+total model-named folders found: 2357
+181G	/mnt/wslg/distro/home/l3ung/ComfyUI
+181G	/mnt/wslg/distro/home/l3ung/ComfyUI
+181G	/home/l3ung/ComfyUI
+169G	/mnt/wslg/distro/home/l3ung/ComfyUI/models
+169G	/mnt/wslg/distro/home/l3ung/ComfyUI/models
+169G	/home/l3ung/ComfyUI/models
+98G	/mnt/c/Users/l3ung/.ollama/models
+98G	/mnt/c/Users/l3ung/.ollama/models
+98G	/mnt/c/Users/l3ung/.ollama
+98G	/mnt/c/Users/l3ung/.ollama
+96G	/mnt/wslg/distro/home/l3ung/ComfyUI/models/diffusion_models
+96G	/mnt/wslg/distro/home/l3ung/ComfyUI/models/diffusion_models
+96G	/home/l3ung/ComfyUI/models/diffusion_models
+80G	/mnt/wslg/distro/home/l3ung/UVR5-UI/models
+80G	/mnt/wslg/distro/home/l3ung/UVR5-UI/models
+80G	/home/l3ung/UVR5-UI/models
+36G	/mnt/wslg/distro/home/l3ung/.cache
+36G	/mnt/wslg/distro/home/l3ung/.cache
+36G	/home/l3ung/.cache
+28G	/mnt/wslg/distro/home/l3ung/ComfyUI/models/checkpoints
+28G	/mnt/wslg/distro/home/l3ung/ComfyUI/models/checkpoints
+28G	/home/l3ung/ComfyUI/models/checkpoints
+12G	/mnt/c/Users/l3ung/.cache
+12G	/mnt/c/Users/l3ung/.cache
+7.6G	/mnt/wslg/distro/home/l3ung/.cache/huggingface/hub/models--Qwen--Qwen3-4B-Instruct-2507
+7.6G	/mnt/wslg/distro/home/l3ung/.cache/huggingface/hub/models--Qwen--Qwen3-4B-Instruct-2507
+7.6G	/home/l3ung/.cache/huggingface/hub/models--Qwen--Qwen3-4B-Instruct-2507
+6.0G	/mnt/wslg/distro/home/l3ung/venvs/gemma-avatar-s2s
+6.0G	/mnt/wslg/distro/home/l3ung/venvs/gemma-avatar-s2s
+6.0G	/home/l3ung/venvs/gemma-avatar-s2s
+4.3G	/mnt/wslg/distro/home/l3ung/.cache/huggingface/hub/models--Qwen--Qwen3-TTS-12Hz-1.7B-CustomVoice
+4.3G	/mnt/wslg/distro/home/l3ung/.cache/huggingface/hub/models--Qwen--Qwen3-TTS-12Hz-1.7B-CustomVoice
+4.3G	/home/l3ung/.cache/huggingface/hub/models--Qwen--Qwen3-TTS-12Hz-1.7B-CustomVoice
+4.0G	/mnt/wslg/distro/home/l3ung/gemma-avatar/models/qwen3-tts-gguf
+4.0G	/mnt/wslg/distro/home/l3ung/gemma-avatar/models/qwen3-tts-gguf
+4.0G	/mnt/wslg/distro/home/l3ung/gemma-avatar/models
+4.0G	/mnt/wslg/distro/home/l3ung/gemma-avatar/models
+4.0G	/mnt/wslg/distro/home/l3ung/gemma-avatar
+4.0G	/mnt/wslg/distro/home/l3ung/gemma-avatar
+4.0G	/home/l3ung/gemma-avatar/models/qwen3-tts-gguf
+4.0G	/home/l3ung/gemma-avatar/models
+4.0G	/home/l3ung/gemma-avatar
+3.5G	/usr/local/lib/ollama
+3.5G	/mnt/wslg/distro/usr/local/lib/ollama
+3.5G	/mnt/wslg/distro/usr/local/lib/ollama
+2.4G	/mnt/wslg/distro/home/l3ung/.cache/huggingface/hub/models--nvidia--parakeet-tdt-0.6b-v3
+2.4G	/mnt/wslg/distro/home/l3ung/.cache/huggingface/hub/models--nvidia--parakeet-tdt-0.6b-v3
+2.4G	/home/l3ung/.cache/huggingface/hub/models--nvidia--parakeet-tdt-0.6b-v3
+2.2G	/mnt/c/Users/l3ung/.cache/torch/hub/checkpoints
+2.2G	/mnt/c/Users/l3ung/.cache/torch/hub/checkpoints
+950M	/mnt/wslg/distro/home/l3ung/ComfyUI/models/latent_upscale_models
+950M	/mnt/wslg/distro/home/l3ung/ComfyUI/models/latent_upscale_models
+950M	/home/l3ung/ComfyUI/models/latent_upscale_models
+374M	/mnt/c/Users/l3ung/OllamaSourceCodeRebuilt
+374M	/mnt/c/Users/l3ung/OllamaSourceCodeRebuilt
+338M	/mnt/c/Users/l3ung/.cache/huggingface/hub/models--fastrtc--kokoro-onnx
+338M	/mnt/c/Users/l3ung/.cache/huggingface/hub/models--fastrtc--kokoro-onnx
+236M	/mnt/c/Users/l3ung/.cache/huggingface/hub/models--UsefulSensors--moonshine
+236M	/mnt/c/Users/l3ung/.cache/huggingface/hub/models--UsefulSensors--moonshine
+176M	/mnt/wslg/distro/home/l3ung/ComfyUI/ComfyUI-Manager
+176M	/mnt/wslg/distro/home/l3ung/ComfyUI/ComfyUI-Manager
+176M	/home/l3ung/ComfyUI/ComfyUI-Manager
+169M	/mnt/c/Users/l3ung/gemma-avatar-offline
+169M	/mnt/c/Users/l3ung/gemma-avatar-offline
+118M	/mnt/wslg/distro/home/l3ung/venvs/gemma-avatar-s2s/lib/python3.13/site-packages/qwentts_cpp
+118M	/mnt/wslg/distro/home/l3ung/venvs/gemma-avatar-s2s/lib/python3.13/site-packages/qwentts_cpp
+118M	/mnt/wslg/distro/home/l3ung/.cache/uv/archive-v0/rdUkLGcA-sUh2ADh/qwentts_cpp
+118M	/mnt/wslg/distro/home/l3ung/.cache/uv/archive-v0/rdUkLGcA-sUh2ADh/qwentts_cpp
+118M	/home/l3ung/venvs/gemma-avatar-s2s/lib/python3.13/site-packages/qwentts_cpp
+118M	/home/l3ung/.cache/uv/archive-v0/rdUkLGcA-sUh2ADh/qwentts_cpp
+101M	/mnt/wslg/distro/home/l3ung/venvs/gemma-avatar-s2s/lib/python3.13/site-packages/transformers/models
+101M	/mnt/wslg/distro/home/l3ung/venvs/gemma-avatar-s2s/lib/python3.13/site-packages/transformers/models
+101M	/home/l3ung/venvs/gemma-avatar-s2s/lib/python3.13/site-packages/transformers/models
+100M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python311/site-packages/transformers/models
+100M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python311/site-packages/transformers/models
+94M	/mnt/wslg/distro/home/l3ung/miniconda3/lib/python3.13/site-packages/transformers/models
+94M	/mnt/wslg/distro/home/l3ung/miniconda3/lib/python3.13/site-packages/transformers/models
+94M	/home/l3ung/miniconda3/lib/python3.13/site-packages/transformers/models
+93M	/mnt/wslg/distro/home/l3ung/miniconda3/lib/python3.13/site-packages/comfyui_workflow_templates_media_other
+93M	/mnt/wslg/distro/home/l3ung/miniconda3/lib/python3.13/site-packages/comfyui_workflow_templates_media_other
+93M	/mnt/wslg/distro/home/l3ung/ComfyUI/comfyenv/lib/python3.13/site-packages/comfyui_workflow_templates_media_other
+93M	/mnt/wslg/distro/home/l3ung/ComfyUI/comfyenv/lib/python3.13/site-packages/comfyui_workflow_templates_media_other
+93M	/home/l3ung/miniconda3/lib/python3.13/site-packages/comfyui_workflow_templates_media_other
+93M	/home/l3ung/ComfyUI/comfyenv/lib/python3.13/site-packages/comfyui_workflow_templates_media_other
+89M	/mnt/wslg/distro/home/l3ung/.local/lib/python3.12/site-packages/transformers/models
+89M	/mnt/wslg/distro/home/l3ung/.local/lib/python3.12/site-packages/transformers/models
+89M	/home/l3ung/.local/lib/python3.12/site-packages/transformers/models
+88M	/mnt/wslg/distro/home/l3ung/miniconda3/lib/python3.13/site-packages/comfyui_workflow_templates_media_api
+88M	/mnt/wslg/distro/home/l3ung/miniconda3/lib/python3.13/site-packages/comfyui_workflow_templates_media_api
+88M	/mnt/wslg/distro/home/l3ung/ComfyUI/comfyenv/lib/python3.13/site-packages/transformers/models
+88M	/mnt/wslg/distro/home/l3ung/ComfyUI/comfyenv/lib/python3.13/site-packages/transformers/models
+88M	/mnt/wslg/distro/home/l3ung/ComfyUI/comfyenv/lib/python3.13/site-packages/comfyui_workflow_templates_media_api
+88M	/mnt/wslg/distro/home/l3ung/ComfyUI/comfyenv/lib/python3.13/site-packages/comfyui_workflow_templates_media_api
+88M	/home/l3ung/miniconda3/lib/python3.13/site-packages/comfyui_workflow_templates_media_api
+88M	/home/l3ung/ComfyUI/comfyenv/lib/python3.13/site-packages/transformers/models
+88M	/home/l3ung/ComfyUI/comfyenv/lib/python3.13/site-packages/comfyui_workflow_templates_media_api
+86M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python310/site-packages/transformers/models
+86M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python310/site-packages/transformers/models
+85M	/mnt/wslg/distro/home/l3ung/miniconda3/lib/python3.13/site-packages/comfyui_workflow_templates_media_video
+85M	/mnt/wslg/distro/home/l3ung/miniconda3/lib/python3.13/site-packages/comfyui_workflow_templates_media_video
+85M	/mnt/wslg/distro/home/l3ung/ComfyUI/comfyenv/lib/python3.13/site-packages/comfyui_workflow_templates_media_video
+85M	/mnt/wslg/distro/home/l3ung/ComfyUI/comfyenv/lib/python3.13/site-packages/comfyui_workflow_templates_media_video
+85M	/mnt/c/Python313/Lib/site-packages/transformers/models
+85M	/mnt/c/Python313/Lib/site-packages/transformers/models
+85M	/home/l3ung/miniconda3/lib/python3.13/site-packages/comfyui_workflow_templates_media_video
+85M	/home/l3ung/ComfyUI/comfyenv/lib/python3.13/site-packages/comfyui_workflow_templates_media_video
+81M	/mnt/wslg/distro/home/l3ung/universe/gemma-avatar
+81M	/mnt/wslg/distro/home/l3ung/universe/gemma-avatar
+81M	/home/l3ung/universe/gemma-avatar
+80M	/mnt/c/Users/l3ung/Desktop/Gemma/gemma-avatar
+80M	/mnt/c/Users/l3ung/Desktop/Gemma/gemma-avatar
+80M	/mnt/c/Users/l3ung/Desktop/Gemma
+80M	/mnt/c/Users/l3ung/Desktop/Gemma
+78M	/mnt/wslg/distro/home/l3ung/miniconda3/lib/python3.13/site-packages/comfyui_workflow_templates_media_image
+78M	/mnt/wslg/distro/home/l3ung/miniconda3/lib/python3.13/site-packages/comfyui_workflow_templates_media_image
+78M	/mnt/wslg/distro/home/l3ung/ComfyUI/comfyenv/lib/python3.13/site-packages/comfyui_workflow_templates_media_image
+78M	/mnt/wslg/distro/home/l3ung/ComfyUI/comfyenv/lib/python3.13/site-packages/comfyui_workflow_templates_media_image
+78M	/home/l3ung/miniconda3/lib/python3.13/site-packages/comfyui_workflow_templates_media_image
+78M	/home/l3ung/ComfyUI/comfyenv/lib/python3.13/site-packages/comfyui_workflow_templates_media_image
+71M	/mnt/c/Users/l3ung/gemma-avatar-offline/gemma-avatar
+71M	/mnt/c/Users/l3ung/gemma-avatar-offline/gemma-avatar
+68M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python311/site-packages/gruut_lang_es/espeak
+68M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python311/site-packages/gruut_lang_es/espeak
+67M	/mnt/wslg/distro/home/l3ung/miniconda3/lib/python3.13/site-packages/comfyui_frontend_package
+67M	/mnt/wslg/distro/home/l3ung/miniconda3/lib/python3.13/site-packages/comfyui_frontend_package
+67M	/mnt/wslg/distro/home/l3ung/ComfyUI/comfyenv/lib/python3.13/site-packages/comfyui_frontend_package
+67M	/mnt/wslg/distro/home/l3ung/ComfyUI/comfyenv/lib/python3.13/site-packages/comfyui_frontend_package
+67M	/home/l3ung/miniconda3/lib/python3.13/site-packages/comfyui_frontend_package
+67M	/home/l3ung/ComfyUI/comfyenv/lib/python3.13/site-packages/comfyui_frontend_package
+66M	/mnt/wslg/distro/home/l3ung/local_ollama_arena_agent
+66M	/mnt/wslg/distro/home/l3ung/local_ollama_arena_agent
+66M	/mnt/c/Users/l3ung/gemma-avatar-offline/workspace-implementation/gemma-avatar-offline-package/gemma-avatar
+66M	/mnt/c/Users/l3ung/gemma-avatar-offline/workspace-implementation/gemma-avatar-offline-package/gemma-avatar
+66M	/mnt/c/Users/l3ung/gemma-avatar-offline/workspace-implementation/gemma-avatar-offline-package
+66M	/mnt/c/Users/l3ung/gemma-avatar-offline/workspace-implementation/gemma-avatar-offline-package
+66M	/home/l3ung/local_ollama_arena_agent
+64M	/mnt/wslg/distro/home/l3ung/ComfyUI/models/upscale_models
+64M	/mnt/wslg/distro/home/l3ung/ComfyUI/models/upscale_models
+64M	/home/l3ung/ComfyUI/models/upscale_models
+53M	/mnt/c/Users/l3ung/AppData/Roaming/demucs-gui/pretrained/checkpoints
+53M	/mnt/c/Users/l3ung/AppData/Roaming/demucs-gui/pretrained/checkpoints
+49M	/mnt/wslg/distro/home/l3ung/.cache/uv/archive-v0/NcYOmd_ThsQhZy1A/transformers/models
+49M	/mnt/wslg/distro/home/l3ung/.cache/uv/archive-v0/NcYOmd_ThsQhZy1A/transformers/models
+49M	/home/l3ung/.cache/uv/archive-v0/NcYOmd_ThsQhZy1A/transformers/models
+46M	/mnt/wslg/distro/home/l3ung/miniconda3/lib/python3.13/site-packages/comfyui_embedded_docs
+46M	/mnt/wslg/distro/home/l3ung/miniconda3/lib/python3.13/site-packages/comfyui_embedded_docs
+46M	/mnt/wslg/distro/home/l3ung/ComfyUI/comfyenv/lib/python3.13/site-packages/comfyui_embedded_docs
+46M	/mnt/wslg/distro/home/l3ung/ComfyUI/comfyenv/lib/python3.13/site-packages/comfyui_embedded_docs
+46M	/home/l3ung/miniconda3/lib/python3.13/site-packages/comfyui_embedded_docs
+46M	/home/l3ung/ComfyUI/comfyenv/lib/python3.13/site-packages/comfyui_embedded_docs
+37M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python311/site-packages/gruut_lang_de/espeak
+37M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python311/site-packages/gruut_lang_de/espeak
+35M	/mnt/wslg/distro/home/l3ung/.cache/torch/hub/snakers4_silero-vad_master
+35M	/mnt/wslg/distro/home/l3ung/.cache/torch/hub/snakers4_silero-vad_master
+35M	/home/l3ung/.cache/torch/hub/snakers4_silero-vad_master
+29M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python311/site-packages/llama_index
+29M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python311/site-packages/llama_index
+25M	/mnt/wslg/distro/home/l3ung/miniconda3/lib/python3.13/site-packages/piper
+25M	/mnt/wslg/distro/home/l3ung/miniconda3/lib/python3.13/site-packages/piper
+25M	/home/l3ung/miniconda3/lib/python3.13/site-packages/piper
+23M	/mnt/wslg/distro/home/l3ung/.cache/uv/archive-v0/jXvsKK1l7H6YGrex/nemo
+23M	/mnt/wslg/distro/home/l3ung/.cache/uv/archive-v0/jXvsKK1l7H6YGrex/nemo
+23M	/home/l3ung/.cache/uv/archive-v0/jXvsKK1l7H6YGrex/nemo
+21M	/mnt/wslg/distro/home/l3ung/miniconda3/lib/python3.13/site-packages/llama_cpp
+21M	/mnt/wslg/distro/home/l3ung/miniconda3/lib/python3.13/site-packages/llama_cpp
+21M	/mnt/wslg/distro/home/l3ung/.cache/uv/archive-v0/XeRssn7Co9TrcbtL/espeakng_loader
+21M	/mnt/wslg/distro/home/l3ung/.cache/uv/archive-v0/XeRssn7Co9TrcbtL/espeakng_loader
+21M	/home/l3ung/miniconda3/lib/python3.13/site-packages/llama_cpp
+21M	/home/l3ung/.cache/uv/archive-v0/XeRssn7Co9TrcbtL/espeakng_loader
+20M	/mnt/wslg/distro/home/l3ung/.cache/uv/.tmp6YGnQk/nemo
+20M	/mnt/wslg/distro/home/l3ung/.cache/uv/.tmp6YGnQk/nemo
+20M	/home/l3ung/.cache/uv/.tmp6YGnQk/nemo
+19M	/mnt/wslg/distro/home/l3ung/miniconda3/lib/python3.13/site-packages/piper/espeak-ng-data
+19M	/mnt/wslg/distro/home/l3ung/miniconda3/lib/python3.13/site-packages/piper/espeak-ng-data
+19M	/mnt/wslg/distro/home/l3ung/.cache/uv/archive-v0/XeRssn7Co9TrcbtL/espeakng_loader/espeak-ng-data
+19M	/mnt/wslg/distro/home/l3ung/.cache/uv/archive-v0/XeRssn7Co9TrcbtL/espeakng_loader/espeak-ng-data
+19M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python311/site-packages/espeakng_loader
+19M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python311/site-packages/espeakng_loader
+19M	/mnt/c/Users/l3ung/AppData/Local/uv/cache/archive-v0/MdBF-tpxD52XXDqRGDsiC/espeakng_loader
+19M	/mnt/c/Users/l3ung/AppData/Local/uv/cache/archive-v0/MdBF-tpxD52XXDqRGDsiC/espeakng_loader
+19M	/home/l3ung/miniconda3/lib/python3.13/site-packages/piper/espeak-ng-data
+19M	/home/l3ung/.cache/uv/archive-v0/XeRssn7Co9TrcbtL/espeakng_loader/espeak-ng-data
+18M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python311/site-packages/espeakng_loader/espeak-ng-data
+18M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python311/site-packages/espeakng_loader/espeak-ng-data
+18M	/mnt/c/Users/l3ung/AppData/Local/uv/cache/archive-v0/MdBF-tpxD52XXDqRGDsiC/espeakng_loader/espeak-ng-data
+18M	/mnt/c/Users/l3ung/AppData/Local/uv/cache/archive-v0/MdBF-tpxD52XXDqRGDsiC/espeakng_loader/espeak-ng-data
+17M	/mnt/wslg/distro/home/l3ung/atrium-arena-01a1096b-atrium/public/vendor/mediapipe/models
+17M	/mnt/wslg/distro/home/l3ung/atrium-arena-01a1096b-atrium/public/vendor/mediapipe/models
+17M	/mnt/c/Users/l3ung/.cache/huggingface/hub/models--unsloth--Llama-3.2-1B
+17M	/mnt/c/Users/l3ung/.cache/huggingface/hub/models--unsloth--Llama-3.2-1B
+17M	/home/l3ung/atrium-arena-01a1096b-atrium/public/vendor/mediapipe/models
+15M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python311/site-packages/gruut_lang_en/espeak
+15M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python311/site-packages/gruut_lang_en/espeak
+14M	/mnt/wslg/distro/home/l3ung/.cache/uv/.tmpeP3cIl/transformers/models
+14M	/mnt/wslg/distro/home/l3ung/.cache/uv/.tmpeP3cIl/transformers/models
+14M	/home/l3ung/.cache/uv/.tmpeP3cIl/transformers/models
+13M	/mnt/wslg/distro/home/l3ung/.cache/torch/hub/snakers4_silero-vad_master/src/silero_vad
+13M	/mnt/wslg/distro/home/l3ung/.cache/torch/hub/snakers4_silero-vad_master/src/silero_vad
+13M	/home/l3ung/.cache/torch/hub/snakers4_silero-vad_master/src/silero_vad
+12M	/mnt/wslg/distro/home/l3ung/local_ollama_arena_agent/workspace/.cache
+12M	/mnt/wslg/distro/home/l3ung/local_ollama_arena_agent/workspace/.cache
+12M	/home/l3ung/local_ollama_arena_agent/workspace/.cache
+11M	/mnt/wslg/distro/home/l3ung/miniconda3/lib/python3.13/site-packages/diffusers/models
+11M	/mnt/wslg/distro/home/l3ung/miniconda3/lib/python3.13/site-packages/diffusers/models
+11M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python311/site-packages/gruut_lang_fr/espeak
+11M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python311/site-packages/gruut_lang_fr/espeak
+11M	/home/l3ung/miniconda3/lib/python3.13/site-packages/diffusers/models
+9.7M	/mnt/wslg/distro/home/l3ung/ComfyUI/comfy/text_encoders/qwen35_tokenizer
+9.7M	/mnt/wslg/distro/home/l3ung/ComfyUI/comfy/text_encoders/qwen35_tokenizer
+9.7M	/home/l3ung/ComfyUI/comfy/text_encoders/qwen35_tokenizer
+8.8M	/mnt/wslg/distro/home/l3ung/ComfyUI/comfy/text_encoders/llama_tokenizer
+8.8M	/mnt/wslg/distro/home/l3ung/ComfyUI/comfy/text_encoders/llama_tokenizer
+8.8M	/home/l3ung/ComfyUI/comfy/text_encoders/llama_tokenizer
+8.7M	/mnt/wslg/distro/home/l3ung/.cache/uv/.tmprXiG7v/espeakng_loader
+8.7M	/mnt/wslg/distro/home/l3ung/.cache/uv/.tmprXiG7v/espeakng_loader
+8.7M	/home/l3ung/.cache/uv/.tmprXiG7v/espeakng_loader
+8.2M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python311/site-packages/diffusers/models
+8.2M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python311/site-packages/diffusers/models
+7.5M	/mnt/wslg/distro/home/l3ung/miniconda3/lib/python3.13/site-packages/timm/models
+7.5M	/mnt/wslg/distro/home/l3ung/miniconda3/lib/python3.13/site-packages/timm/models
+7.5M	/home/l3ung/miniconda3/lib/python3.13/site-packages/timm/models
+7.0M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python311/site-packages/llama_cpp
+7.0M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python311/site-packages/llama_cpp
+6.8M	/mnt/wslg/distro/home/l3ung/.cache/uv/.tmprXiG7v/espeakng_loader/espeak-ng-data
+6.8M	/mnt/wslg/distro/home/l3ung/.cache/uv/.tmprXiG7v/espeakng_loader/espeak-ng-data
+6.8M	/home/l3ung/.cache/uv/.tmprXiG7v/espeakng_loader/espeak-ng-data
+6.3M	/mnt/wslg/distro/home/l3ung/miniconda3/lib/python3.13/site-packages/comfyui_manager
+6.3M	/mnt/wslg/distro/home/l3ung/miniconda3/lib/python3.13/site-packages/comfyui_manager
+6.3M	/mnt/wslg/distro/home/l3ung/ComfyUI/comfyenv/lib/python3.13/site-packages/comfyui_manager
+6.3M	/mnt/wslg/distro/home/l3ung/ComfyUI/comfyenv/lib/python3.13/site-packages/comfyui_manager
+6.3M	/home/l3ung/miniconda3/lib/python3.13/site-packages/comfyui_manager
+6.3M	/home/l3ung/ComfyUI/comfyenv/lib/python3.13/site-packages/comfyui_manager
+4.9M	/mnt/wslg/distro/home/l3ung/artemis/artemis/vendor_sources/gemma_avatar
+4.9M	/mnt/wslg/distro/home/l3ung/artemis/artemis/vendor_sources/gemma_avatar
+4.9M	/mnt/c/Users/l3ung/gemma-avatar-offline/workspace-implementation/gemma-avatar
+4.9M	/mnt/c/Users/l3ung/gemma-avatar-offline/workspace-implementation/gemma-avatar
+4.9M	/home/l3ung/artemis/artemis/vendor_sources/gemma_avatar
+4.7M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python311/site-packages/sglang/srt/models
+4.7M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python311/site-packages/sglang/srt/models
+4.3M	/mnt/wslg/distro/home/l3ung/ComfyUI/comfy/text_encoders/qwen25_tokenizer
+4.3M	/mnt/wslg/distro/home/l3ung/ComfyUI/comfy/text_encoders/qwen25_tokenizer
+4.3M	/home/l3ung/ComfyUI/comfy/text_encoders/qwen25_tokenizer
+4.2M	/mnt/wslg/distro/home/l3ung/ComfyUI/comfyenv/lib/python3.13/site-packages/diffusers/models
+4.2M	/mnt/wslg/distro/home/l3ung/ComfyUI/comfyenv/lib/python3.13/site-packages/diffusers/models
+4.2M	/mnt/wslg/distro/home/l3ung/.cache/uv/archive-v0/0gE_rHEEHN1EQ3oG/diffusers/models
+4.2M	/mnt/wslg/distro/home/l3ung/.cache/uv/archive-v0/0gE_rHEEHN1EQ3oG/diffusers/models
+4.2M	/home/l3ung/ComfyUI/comfyenv/lib/python3.13/site-packages/diffusers/models
+4.2M	/home/l3ung/.cache/uv/archive-v0/0gE_rHEEHN1EQ3oG/diffusers/models
+4.1M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python311/site-packages/llama_cloud
+4.1M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python311/site-packages/llama_cloud
+3.8M	/usr/lib/modules/6.6.87.2-microsoft-standard-WSL2/kernel/drivers/net/ethernet/mellanox/mlx5
+3.8M	/usr/lib/modules/6.6.87.2-microsoft-standard-WSL2/kernel/drivers/net/ethernet/mellanox/mlx5
+3.4M	/usr/lib/modules/6.6.87.2-microsoft-standard-WSL2/kernel/drivers/net/ethernet/mellanox/mlxsw
+3.4M	/usr/lib/modules/6.6.87.2-microsoft-standard-WSL2/kernel/drivers/net/ethernet/mellanox/mlxsw
+2.9M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python311/site-packages/panda3d/models
+2.9M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python311/site-packages/panda3d/models
+2.5M	/mnt/wslg/distro/home/l3ung/venvs/gemma-avatar-s2s/lib/python3.13/site-packages/onnxruntime/transformers/models
+2.5M	/mnt/wslg/distro/home/l3ung/venvs/gemma-avatar-s2s/lib/python3.13/site-packages/onnxruntime/transformers/models
+2.5M	/mnt/wslg/distro/home/l3ung/miniconda3/lib/python3.13/site-packages/onnxruntime/transformers/models
+2.5M	/mnt/wslg/distro/home/l3ung/miniconda3/lib/python3.13/site-packages/onnxruntime/transformers/models
+2.5M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python311/site-packages/onnxruntime/transformers/models
+2.5M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python311/site-packages/onnxruntime/transformers/models
+2.5M	/home/l3ung/venvs/gemma-avatar-s2s/lib/python3.13/site-packages/onnxruntime/transformers/models
+2.5M	/home/l3ung/miniconda3/lib/python3.13/site-packages/onnxruntime/transformers/models
+2.4M	/mnt/wslg/distro/home/l3ung/miniconda3/pkgs/torchvision-0.20.1-py312_cu121/lib/python3.12/site-packages/torchvision/models
+2.4M	/mnt/wslg/distro/home/l3ung/miniconda3/pkgs/torchvision-0.20.1-py312_cu121/lib/python3.12/site-packages/torchvision/models
+2.4M	/mnt/wslg/distro/home/l3ung/miniconda3/lib/python3.13/site-packages/torchvision/models
+2.4M	/mnt/wslg/distro/home/l3ung/miniconda3/lib/python3.13/site-packages/torchvision/models
+2.4M	/mnt/wslg/distro/home/l3ung/ComfyUI/comfyenv/lib/python3.13/site-packages/torchvision/models
+2.4M	/mnt/wslg/distro/home/l3ung/ComfyUI/comfyenv/lib/python3.13/site-packages/torchvision/models
+2.4M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python311/site-packages/torchvision/models
+2.4M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python311/site-packages/torchvision/models
+2.4M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python310/site-packages/diffusers/models
+2.4M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python310/site-packages/diffusers/models
+2.4M	/mnt/c/Users/l3ung/.vscode/extensions/ollama.ollama-0.0.8
+2.4M	/mnt/c/Users/l3ung/.vscode/extensions/ollama.ollama-0.0.8
+2.4M	/home/l3ung/miniconda3/pkgs/torchvision-0.20.1-py312_cu121/lib/python3.12/site-packages/torchvision/models
+2.4M	/home/l3ung/miniconda3/lib/python3.13/site-packages/torchvision/models
+2.4M	/home/l3ung/ComfyUI/comfyenv/lib/python3.13/site-packages/torchvision/models
+2.3M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python311/site-packages/moonshine_onnx
+2.3M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python311/site-packages/moonshine_onnx
+2.3M	/mnt/c/Users/l3ung/AppData/Local/uv/cache/archive-v0/9XrnKpUZmyC-W29k7S7Ys/moonshine_onnx
+2.3M	/mnt/c/Users/l3ung/AppData/Local/uv/cache/archive-v0/9XrnKpUZmyC-W29k7S7Ys/moonshine_onnx
+2.1M	/mnt/wslg/distro/home/l3ung/miniconda3/lib/python3.13/site-packages/interactions/models
+2.1M	/mnt/wslg/distro/home/l3ung/miniconda3/lib/python3.13/site-packages/interactions/models
+2.1M	/mnt/wslg/distro/home/l3ung/UVR5-UI/env/lib/python3.10/site-packages/torchvision/models
+2.1M	/mnt/wslg/distro/home/l3ung/UVR5-UI/env/lib/python3.10/site-packages/torchvision/models
+2.1M	/mnt/wslg/distro/home/l3ung/UVR5-UI/env/lib/python3.10/site-packages/onnxruntime/transformers/models
+2.1M	/mnt/wslg/distro/home/l3ung/UVR5-UI/env/lib/python3.10/site-packages/onnxruntime/transformers/models
+2.1M	/home/l3ung/miniconda3/lib/python3.13/site-packages/interactions/models
+2.1M	/home/l3ung/UVR5-UI/env/lib/python3.10/site-packages/torchvision/models
+2.1M	/home/l3ung/UVR5-UI/env/lib/python3.10/site-packages/onnxruntime/transformers/models
+2.0M	/usr/lib/wsl/drivers/mlx4_bus.inf_amd64_4c426f3bebc68844
+2.0M	/usr/lib/wsl/drivers/mlx4_bus.inf_amd64_4c426f3bebc68844
+2.0M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python310/site-packages/torchvision/models
+2.0M	/mnt/c/Users/l3ung/AppData/Roaming/Python/Python310/site-packages/torchvision/models
+1.8M	/usr/lib/wsl/drivers/netmlx5.inf_amd64_101a408e6cb1d8f8
+1.8M	/usr/lib/wsl/drivers/netmlx5.inf_amd64_101a408e6cb1d8f8
+1.8M	/mnt/c/Users/l3ung/.cache/huggingface/hub/models--freddyaboulton--silero-vad
+1.8M	/mnt/c/Users/l3ung/.cache/huggingface/hub/models--freddyaboulton--silero-vad
+===== 9. OTHER COPIES OF THIS KIND OF PROJECT =====
+/tmp/s2sscan.jP64w3
+/mnt/c/Windows/WinSxS/amd64_microsoft-windows-shenzhouttsvoicecommon_31bf3856ad364e35_10.0.19041.3636_none_f0bf2cbafd54ba44
+/mnt/c/Windows/WinSxS/wow64_microsoft-windows-shenzhouttsvoicecommon_31bf3856ad364e35_10.0.19041.3636_none_fb13d70d31b57c3f
+/mnt/c/Windows/WinSxS/amd64_microsoft-windows-certificaterequesttool_31bf3856ad364e35_10.0.19041.5794_none_dca38d73ccbf33a1
+/mnt/c/Windows/WinSxS/wow64_microsoft-windows-certificaterequesttool_31bf3856ad364e35_10.0.19041.5794_none_e6f837c6011ff59c
+/mnt/c/Windows/WinSxS/amd64_microsoft-windows-c..questtool.resources_31bf3856ad364e35_10.0.19041.1_en-us_6a05254c1216c07c
+/mnt/c/Windows/WinSxS/amd64_microsoft-windows-certificaterequesttool_31bf3856ad364e35_10.0.19041.7663_none_dcab7715ccb9ac58
+/mnt/c/Windows/WinSxS/wow64_microsoft-windows-certificaterequesttool_31bf3856ad364e35_10.0.19041.7663_none_e7002168011a6e53
+/mnt/c/Windows/WinSxS/amd64_microsoft-windows-c..questtool.resources_31bf3856ad364e35_10.0.19041.7291_en-us_28dd697827e74af4
+/home/l3ung/atrium-arena-01a1096b-atrium/models/qwen3-tts-gguf
+/home/l3ung/atrium-arena-01a1096b-atrium/src/s2s
+/home/l3ung/speech-to-speech-0.2.10
+/home/l3ung/universe/gemma-avatar/src/s2s
+/home/l3ung/gemma-avatar/models/qwen3-tts-gguf
+/home/l3ung/gemma-avatar/src/s2s
+===== 10. SHELL CONFIG (env vars already pointing at models?) =====
+
+==================================================================
+ END OF REPORT
+==================================================================
