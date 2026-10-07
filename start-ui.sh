@@ -1,42 +1,43 @@
 #!/usr/bin/env bash
 # ──────────────────────────────────────────────────────────────────────
-#  HF Realtime Voice  –  local orb UI (exact copy of the HF Space)
-#
-#  This runs the same server.py the Space uses. Without LOAD_BALANCER_URL
-#  and SPACE_ID set, all usage limits, login gates, and time metering are
-#  automatically disabled by the server's own code.
-#
-#  Prerequisites: start-server.sh must already be running in another
-#  terminal (the orb UI connects to it over WebSocket).
+#  Local orb UI server. For a one-terminal launch of UI + AI backend, use
+#  ./start.sh; this script can also be run on its own for UI debugging.
+#  It deliberately never runs pip or downloads dependencies.
 # ──────────────────────────────────────────────────────────────────────
-set -e
+set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 UI_DIR="$SCRIPT_DIR/hf-ui"
 
 if [ ! -f "$UI_DIR/server.py" ]; then
-    echo "ERROR: hf-ui/ not found. Something went wrong with the clone."
+    echo "ERROR: hf-ui/ not found. Something went wrong with the checkout." >&2
+    exit 1
+fi
+
+VENV="${S2S_VENV:-}"
+if [ -z "$VENV" ]; then
+    for candidate in "$SCRIPT_DIR/.venv" "$HOME/speech-to-speech-0.2.10/.venv" "$HOME/venvs/gemma-avatar-s2s"; do
+        if [ -x "$candidate/bin/python" ]; then VENV="$candidate"; break; fi
+    done
+fi
+if [ -z "$VENV" ] || [ ! -x "$VENV/bin/python" ]; then
+    echo "ERROR: no usable Python environment found. Set S2S_VENV=/path/to/.venv" >&2
+    exit 1
+fi
+
+if ! "$VENV/bin/python" -c 'import fastapi, httpx, uvicorn' >/dev/null 2>&1; then
+    echo "ERROR: the selected environment lacks FastAPI, httpx, or uvicorn:" >&2
+    echo "  $VENV" >&2
+    echo "This offline launcher will not install packages. Choose an existing environment with those packages." >&2
     exit 1
 fi
 
 cd "$UI_DIR"
+UI_PORT="${S2S_UI_PORT:-8080}"
 
-# Install the UI server's own deps (tiny – fastapi, uvicorn, httpx).
-# These are separate from the speech-to-speech venv.
-pip install --quiet fastapi uvicorn httpx 2>/dev/null || true
+printf '\nStarting local Orb UI\n'
+printf '  Browser:       http://localhost:%s\n' "$UI_PORT"
+printf '  S2S WebSocket: ws://localhost:%s/v1/realtime\n' "${S2S_WS_PORT:-8765}"
+printf '  Python env:    %s\n\n' "$VENV"
 
-echo ""
-echo "╔══════════════════════════════════════════════════════════════╗"
-echo "║   HF Realtime Voice  –  Local Orb UI  (no limits!)          ║"
-echo "║                                                              ║"
-echo "║   Open your browser:  http://localhost:8080                  ║"
-echo "║                                                              ║"
-echo "║   In the UI click Settings (gear icon) and set:             ║"
-echo "║     Server URL →  ws://localhost:8765                        ║"
-echo "║                                                              ║"
-echo "║   Make sure start-server.sh is running first.               ║"
-echo "╚══════════════════════════════════════════════════════════════╝"
-echo ""
-
-# No LOAD_BALANCER_URL and no SPACE_ID = all limits are off.
-uvicorn server:app --host 0.0.0.0 --port 8080
+exec "$VENV/bin/python" -m uvicorn server:app --host 0.0.0.0 --port "$UI_PORT"

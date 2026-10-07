@@ -1,43 +1,74 @@
 #!/usr/bin/env bash
-# ──────────────────────────────────────────────────────────────────────
-#  HF Realtime Voice  –  Unified Startup Script
-#
-#  Launches both the AI backend and the web UI concurrently in one 
-#  terminal. Handles background process tracking and clean shutdown 
-#  on Ctrl+C (SIGINT/SIGTERM).
-# ──────────────────────────────────────────────────────────────────────
-set -e
+# Start the local orb UI and offline speech-to-speech backend together,
+# in one terminal. Ctrl+C stops both processes.
+set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
-# Cleanup trap to ensure background processes are killed on exit
+UI_PID=""
+S2S_PID=""
+UI_PORT="${S2S_UI_PORT:-8080}"
+WS_PORT="${S2S_WS_PORT:-8765}"
+
 cleanup() {
+    local status=$?
+    trap - EXIT INT TERM
     echo ""
-    echo "Stopping servers cleanly..."
-    if [ -n "$UI_PID" ]; then
-        kill "$UI_PID" 2>/dev/null || true
-    fi
-    echo "All stopped. Have a great day!"
-    exit 0
+    echo "Stopping the UI and speech server..."
+    for pid in "$S2S_PID" "$UI_PID"; do
+        if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
+            kill "$pid" 2>/dev/null || true
+        fi
+    done
+    for pid in "$S2S_PID" "$UI_PID"; do
+        if [ -n "$pid" ]; then wait "$pid" 2>/dev/null || true; fi
+    done
+    echo "Both services stopped."
+    exit "$status"
 }
-trap cleanup SIGINT SIGTERM EXIT
+trap cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
 
-# ── 1. Start UI Server in background ──────────────────────────────────
-echo "Starting local Orb UI..."
-./start-ui.sh > /tmp/local-ui.log 2>&1 &
+wait_for_port() {
+    local pid="$1" port="$2" label="$3" elapsed=0
+    printf 'Waiting for %s on port %s' "$label" "$port"
+    while [ "$elapsed" -lt 300 ]; do
+        if ! kill -0 "$pid" 2>/dev/null; then
+            echo ""
+            echo "ERROR: $label stopped before becoming ready." >&2
+            wait "$pid" 2>/dev/null || true
+            return 1
+        fi
+        if (exec 3<>"/dev/tcp/127.0.0.1/$port") >/dev/null 2>&1; then
+            echo " ready."
+            return 0
+        fi
+        if [ "$((elapsed % 5))" -eq 0 ]; then printf '.'; fi
+        sleep 1
+        elapsed=$((elapsed + 1))
+    done
+    echo ""
+    echo "ERROR: timed out waiting for $label on port $port." >&2
+    return 1
+}
+
+echo "Starting local web UI and offline speech server together..."
+./start-ui.sh &
 UI_PID=$!
+./start-server.sh &
+S2S_PID=$!
 
-# Ensure the background process started
-if ! ps -p "$UI_PID" > /dev/null; then
-    echo "ERROR: Failed to start the UI Server."
-    exit 1
-fi
+wait_for_port "$UI_PID" "$UI_PORT" "Web UI"
+wait_for_port "$S2S_PID" "$WS_PORT" "speech-to-speech backend"
 
-echo "Frontend UI running in background (logs: /tmp/local-ui.log)"
-echo "Available at: http://localhost:8080"
+echo ""
+echo "✓ Both services are ready."
+echo "  Browser:       http://localhost:$UI_PORT"
+echo "  UI server URL: ws://localhost:$WS_PORT"
+echo "  Keep this terminal open; press Ctrl+C to stop both."
 echo ""
 
-# ── 2. Start AI Engine in foreground ──────────────────────────────────
-echo "Starting speech-to-speech engine..."
-./start-server.sh
+# Stay attached to both services; if either exits, clean up the other.
+wait -n "$UI_PID" "$S2S_PID"

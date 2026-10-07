@@ -128,13 +128,14 @@ printf '%s───────────────────────�
 printf '  %s%d passed%s   %s%d warnings%s   %s%d failed%s\n' "$G" "$PASS" "$Z" "$Y" "$WARN" "$Z" "$R" "$FAIL" "$Z"
 echo
 if [ "$FAIL" -eq 0 ]; then
-    printf '  %sFully offline-ready.%s  Start it with:  ./start-server.sh\n' "$G$B" "$Z"
+    printf '  %sFully offline-ready.%s  Start UI + backend together:  ./start.sh\n' "$G$B" "$Z"
 else
     printf '  %sMissing pieces above must be resolved before a fully offline run.%s\n' "$R$B" "$Z"
 fi
 echo
 echo "  Notes:"
-echo "    • start-server.sh blocks network downloads by default and stops if a local asset is missing."
-echo "    • explicitly allow downloads with:    S2S_ONLINE=1 ./start-server.sh"
-echo "    • try the GGUF TTS path with:         S2S_TTS_BACKEND=ggml ./start-server.sh"
+echo "    • ./start.sh launches both the local browser UI and backend in one terminal."
+echo "    • the launcher blocks downloads by default and stops if an offline asset is missing."
+echo "    • explicitly allow downloads with: S2S_ONLINE=1 ./start.sh"
+echo "    • standalone backend only:         ./start-server.sh"
 echo
