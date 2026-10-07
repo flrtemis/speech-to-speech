@@ -1,16 +1,13 @@
 from __future__ import annotations
 
 import logging
-import os
 from abc import ABC, abstractmethod
 from collections.abc import Iterable, Iterator, Sized
-from pathlib import Path
 from queue import Empty
 from threading import Lock, Thread
 from typing import Any, Literal, Optional, Protocol, runtime_checkable
 
 import torch
-from huggingface_hub import snapshot_download
 from nltk import sent_tokenize
 from openai.types.realtime.realtime_conversation_item_function_call import (
     RealtimeConversationItemFunctionCall,
@@ -50,6 +47,7 @@ from speech_to_speech.pipeline.messages import (
     TokenUsage,
 )
 from speech_to_speech.pipeline.speculative_turns import SpeculativeTurnTracker
+from speech_to_speech.utils.hf_cache import resolve_hf_model_path
 
 try:
     import mlx.core as mx
@@ -72,35 +70,6 @@ except ImportError:
     HAS_MLX_VLM = False
 
 logger = logging.getLogger(__name__)
-
-
-def _resolve_transformers_model_path(model_name: str) -> tuple[str, bool]:
-    """Return a local snapshot path when offline mode is enabled.
-
-    Transformers 4.57+ may query ``model_info`` while constructing some
-    tokenizers, even when their files are already cached. Passing a local
-    snapshot directory prevents that metadata probe; ``local_files_only``
-    then makes the offline guarantee explicit for every loader call.
-    """
-    local_path = Path(model_name).expanduser()
-    if local_path.is_dir():
-        return str(local_path), True
-
-    offline = any(
-        os.environ.get(variable, "").strip().lower() in {"1", "true", "yes", "on"}
-        for variable in ("HF_HUB_OFFLINE", "TRANSFORMERS_OFFLINE")
-    )
-    if not offline:
-        return model_name, False
-
-    try:
-        snapshot_path = snapshot_download(repo_id=model_name, local_files_only=True)
-    except Exception as error:
-        raise RuntimeError(
-            f"Offline mode is enabled, but model {model_name!r} could not be resolved from the local Hugging Face cache. "
-            "Check HF_HOME/HF_HUB_CACHE, or run once with S2S_ONLINE=1 to download it."
-        ) from error
-    return str(snapshot_path), True
 
 
 @runtime_checkable
@@ -612,7 +581,7 @@ class LanguageModelHandler(BaseLanguageModelHandler):
             self.gen_kwargs = gen_kwargs
         else:
             self.torch_dtype = getattr(torch, torch_dtype)
-            load_name, local_files_only = _resolve_transformers_model_path(model_name)
+            load_name, local_files_only = resolve_hf_model_path(model_name)
             self.tokenizer = AutoTokenizer.from_pretrained(
                 load_name, local_files_only=local_files_only
             )  # type: ignore[assignment]
@@ -799,7 +768,7 @@ class VisionLanguageModelHandler(BaseLanguageModelHandler):
             self.gen_kwargs = gen_kwargs
         else:
             self.torch_dtype = getattr(torch, torch_dtype)
-            load_name, local_files_only = _resolve_transformers_model_path(model_name)
+            load_name, local_files_only = resolve_hf_model_path(model_name)
             self.processor = AutoProcessor.from_pretrained(
                 load_name, trust_remote_code=True, local_files_only=local_files_only
             )  # type: ignore[assignment]

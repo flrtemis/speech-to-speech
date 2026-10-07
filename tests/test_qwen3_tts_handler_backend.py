@@ -125,6 +125,41 @@ def test_setup_preserves_faster_backend_off_darwin(monkeypatch):
     }
 
 
+def test_faster_backend_uses_local_snapshot_in_offline_mode(monkeypatch, tmp_path):
+    snapshot = tmp_path / "snapshots" / "cached-commit"
+    snapshot.mkdir(parents=True)
+    recorded = {}
+
+    class FakeFasterQwen3TTS:
+        @classmethod
+        def from_pretrained(cls, model_name, **kwargs):
+            recorded["model_name"] = model_name
+            recorded["kwargs"] = kwargs
+            return object()
+
+    def resolve_model_path(model_name):
+        assert model_name == "Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice"
+        return str(snapshot), True
+
+    monkeypatch.setattr(qwen3_tts_module, "resolve_hf_model_path", resolve_model_path)
+    monkeypatch.setitem(sys.modules, "faster_qwen3_tts", SimpleNamespace(FasterQwen3TTS=FakeFasterQwen3TTS))
+
+    handler = object.__new__(Qwen3TTSHandler)
+    handler.device = "cuda"
+    handler._setup_faster(
+        "Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice",
+        "float16",
+        "sdpa",
+    )
+
+    assert recorded["model_name"] == str(snapshot)
+    assert recorded["kwargs"] == {
+        "device": "cuda",
+        "dtype": qwen3_tts_module.torch.float16,
+        "attn_implementation": "sdpa",
+    }
+
+
 def test_setup_defaults_to_custom_voice_profile_off_darwin(monkeypatch):
     recorded = {}
 

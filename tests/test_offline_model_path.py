@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from speech_to_speech.LLM import language_model
+from speech_to_speech.utils import hf_cache
 
 
 def _clear_offline_flags(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -23,9 +23,9 @@ def test_offline_model_id_resolves_to_cached_snapshot(monkeypatch: pytest.Monkey
         calls.append((repo_id, local_files_only))
         return str(snapshot)
 
-    monkeypatch.setattr(language_model, "snapshot_download", fake_snapshot_download)
+    monkeypatch.setattr(hf_cache, "snapshot_download", fake_snapshot_download)
 
-    resolved, local_only = language_model._resolve_transformers_model_path("Qwen/example")
+    resolved, local_only = hf_cache.resolve_hf_model_path("Qwen/example")
 
     assert resolved == str(snapshot)
     assert local_only is True
@@ -38,9 +38,9 @@ def test_online_model_id_remains_a_hub_id(monkeypatch: pytest.MonkeyPatch) -> No
     def unexpected_snapshot_download(*_args: object, **_kwargs: object) -> str:
         pytest.fail("online model ids should not be resolved as offline snapshots")
 
-    monkeypatch.setattr(language_model, "snapshot_download", unexpected_snapshot_download)
+    monkeypatch.setattr(hf_cache, "snapshot_download", unexpected_snapshot_download)
 
-    resolved, local_only = language_model._resolve_transformers_model_path("Qwen/example")
+    resolved, local_only = hf_cache.resolve_hf_model_path("Qwen/example")
 
     assert resolved == "Qwen/example"
     assert local_only is False
@@ -50,7 +50,7 @@ def test_local_model_directory_is_always_loaded_locally(tmp_path: Path) -> None:
     model_dir = tmp_path / "model"
     model_dir.mkdir()
 
-    resolved, local_only = language_model._resolve_transformers_model_path(str(model_dir))
+    resolved, local_only = hf_cache.resolve_hf_model_path(str(model_dir))
 
     assert resolved == str(model_dir)
     assert local_only is True
@@ -63,7 +63,7 @@ def test_offline_cache_miss_has_actionable_error(monkeypatch: pytest.MonkeyPatch
     def missing_snapshot(*_args: object, **_kwargs: object) -> str:
         raise OSError("no cached snapshot")
 
-    monkeypatch.setattr(language_model, "snapshot_download", missing_snapshot)
+    monkeypatch.setattr(hf_cache, "snapshot_download", missing_snapshot)
 
     with pytest.raises(RuntimeError, match="could not be resolved from the local Hugging Face cache"):
-        language_model._resolve_transformers_model_path("Qwen/not-cached")
+        hf_cache.resolve_hf_model_path("Qwen/not-cached")

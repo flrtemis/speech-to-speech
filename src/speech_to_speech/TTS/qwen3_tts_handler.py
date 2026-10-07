@@ -31,6 +31,7 @@ from speech_to_speech.pipeline.control import SESSION_END, is_control_message
 from speech_to_speech.pipeline.handler_types import TTSIn, TTSOut
 from speech_to_speech.pipeline.messages import AUDIO_RESPONSE_DONE, PIPELINE_END, EndOfResponse, TTSInput
 from speech_to_speech.pipeline.speculative_turns import SpeculativeTurnTracker
+from speech_to_speech.utils.hf_cache import resolve_hf_model_path
 from speech_to_speech.utils.mlx_lock import MLXLockContext
 
 logger = logging.getLogger(__name__)
@@ -219,8 +220,9 @@ class Qwen3TTSHandler(BaseHandler[TTSIn, TTSOut]):
                 "Install with: pip install faster-qwen3-tts"
             ) from e
 
+        load_name, _ = resolve_hf_model_path(model_name)
         self.model = FasterQwen3TTS.from_pretrained(
-            model_name,
+            load_name,
             device=self.device,
             dtype=self.dtype,
             attn_implementation=attn_implementation,
@@ -253,9 +255,10 @@ class Qwen3TTSHandler(BaseHandler[TTSIn, TTSOut]):
             else:
                 codec_path = str(expanded)
 
+        load_name, _ = resolve_hf_model_path(self.model_name)
         logger.info("Loading Qwen3-TTS via qwentts.cpp/GGML: %s + %s", talker_path, codec_path)
         self.model = FasterQwen3TTS.from_pretrained(
-            self.model_name,
+            load_name,
             backend="ggml",
             gguf_talker_path=talker_path,
             gguf_codec_path=codec_path,
