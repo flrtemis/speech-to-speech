@@ -8,7 +8,7 @@
 #      bash scripts/s2s_doctor.sh
 # ─────────────────────────────────────────────────────────────────────────────
 
-HF_CACHE="${HF_HOME:-$HOME/.cache/huggingface}/hub"
+HF_CACHE="${HF_HUB_CACHE:-${HF_HOME:-$HOME/.cache/huggingface}/hub}"
 TORCH_HUB="${TORCH_HOME:-$HOME/.cache/torch}/hub"
 PASS=0; FAIL=0; WARN=0
 
@@ -23,7 +23,8 @@ bad()  { FAIL=$((FAIL+1)); printf '  %sFAIL%s  %s\n' "$R" "$Z" "$1"; }
 warn() { WARN=$((WARN+1)); printf '  %sWARN%s  %s\n' "$Y" "$Z" "$1"; }
 info() { printf '        %s%s%s\n' "$D" "$1" "$Z"; }
 
-find_first() { find "$1" "${@:2}" 2>/dev/null | head -1 || true; }
+# Ignore Hugging Face's .no_exist sentinels: they stand for absent files.
+find_first() { find "$1" ! -path '*/.no_exist/*' "${@:2}" 2>/dev/null | head -1 || true; }
 
 printf '\n%sSPEECH-TO-SPEECH  ·  offline readiness report%s\n' "$B" "$Z"
 printf '%s%s%s\n' "$D" "$(date)" "$Z"
@@ -68,7 +69,7 @@ for d in "${NLTK_DATA:-}" "$HOME/nltk_data" /usr/share/nltk_data /usr/local/shar
     [ -n "$d" ] || continue
     if [ -e "$d/taggers/averaged_perceptron_tagger_eng" ] || [ -e "$d/taggers/averaged_perceptron_tagger_eng.zip" ]; then TAGGER="$d"; break; fi
 done
-if [ -n "$TAGGER" ]; then ok "perceptron tagger present (repo checks the wrong folder unless patched)"
+if [ -n "$TAGGER" ]; then ok "perceptron tagger present in NLTK's taggers/ folder"
 else warn "tagger missing — harmless with the patched pipeline, noisy without it"; fi
 
 echo
@@ -90,19 +91,23 @@ else warn "qwentts_cpp not found — needed only for the ggml backend"; fi
 
 echo
 echo "${B}5. Python environments holding the pipeline${Z}"
-FOUND_VENV=0
+FOUND_CORE_VENV=0
 while IFS= read -r cfg; do
     v="$(dirname "$cfg")"
-    pkgs=$(find "$v/lib" -maxdepth 3 -name '*.dist-info' -type d 2>/dev/null | sed 's#.*/##; s/\.dist-info$//')
-    cli="no"; echo "$pkgs" | grep -q '^speech-to-speech' && cli="yes"
-    fa=$(echo "$pkgs" | grep -c '^faster-qwen3-tts' || true)
-    np=$(echo "$pkgs" | grep -c '^nano-parakeet' || true)
-    tp=$(echo "$pkgs" | grep -c '^torch-' || true)
+    # Normalize distribution names: packaging allows underscores, dots, and
+    # hyphens interchangeably (e.g. nano_parakeet == nano-parakeet).
+    pkgs=$(find "$v/lib" -maxdepth 3 -name '*.dist-info' -type d 2>/dev/null | sed 's#.*/##; s/\.dist-info$//; s/[_\.]/-/g' | tr '[:upper:]' '[:lower:]')
+    cli="no"; printf '%s\n' "$pkgs" | grep -q '^speech-to-speech' && cli="yes"
+    fa=$(printf '%s\n' "$pkgs" | grep -c '^faster-qwen3-tts' || true)
+    np=$(printf '%s\n' "$pkgs" | grep -c '^nano-parakeet' || true)
+    tp=$(printf '%s\n' "$pkgs" | grep -c '^torch-' || true)
+    tr=$(printf '%s\n' "$pkgs" | grep -c '^transformers-' || true)
     printf '  %s%s%s\n' "$B" "$v" "$Z"
-    info "speech-to-speech CLI: $cli   nano-parakeet: $([ "$np" -gt 0 ] && echo yes || echo NO)   faster-qwen3-tts: $([ "$fa" -gt 0 ] && echo yes || echo NO)   torch: $([ "$tp" -gt 0 ] && echo yes || echo NO)"
-    [ "$cli" = yes ] && FOUND_VENV=1
+    info "console package: $cli   nano-parakeet: $([ "$np" -gt 0 ] && echo yes || echo NO)   faster-qwen3-tts: $([ "$fa" -gt 0 ] && echo yes || echo NO)   torch: $([ "$tp" -gt 0 ] && echo yes || echo NO)   transformers: $([ "$tr" -gt 0 ] && echo yes || echo NO)"
+    [ "$tp" -gt 0 ] && [ "$tr" -gt 0 ] && FOUND_CORE_VENV=1
 done < <(find "$HOME" -maxdepth 4 -name pyvenv.cfg 2>/dev/null | head -12)
-[ "$FOUND_VENV" = 1 ] || bad "no venv with the speech-to-speech CLI found under $HOME (maxdepth 4)"
+[ "$FOUND_CORE_VENV" = 1 ] || bad "no venv with both torch and transformers found under $HOME (maxdepth 4)"
+info "start-server.sh runs this checkout's Python source; an installed console command is optional"
 
 echo
 echo "${B}6. Hardware${Z}"
@@ -129,8 +134,7 @@ else
 fi
 echo
 echo "  Notes:"
-echo "    • the repo's own start-server.sh already sets offline mode once its model"
-echo "      checks pass (they are fixed in this checkout)."
-echo "    • force a network refresh run with:  S2S_ONLINE=1 ./start-server.sh"
-echo "    • try the GGUF TTS path with:        S2S_TTS_BACKEND=ggml ./start-server.sh"
+echo "    • start-server.sh blocks network downloads by default and stops if a local asset is missing."
+echo "    • explicitly allow downloads with:    S2S_ONLINE=1 ./start-server.sh"
+echo "    • try the GGUF TTS path with:         S2S_TTS_BACKEND=ggml ./start-server.sh"
 echo

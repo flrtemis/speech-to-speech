@@ -8,9 +8,9 @@
 #    LLM : Qwen/Qwen3-4B-Instruct-2507   (transformers, CUDA, bf16)
 #    TTS : Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice  (faster-qwen3-tts / CUDA)
 #
-#  Offline behaviour: if every model is found in the local Hugging Face cache,
-#  HF_HUB_OFFLINE / TRANSFORMERS_OFFLINE are exported so nothing can phone home.
-#  Force a refresh: S2S_ONLINE=1 ./start-server.sh
+#  Offline behaviour: network access is blocked by default. If a required asset
+#  is missing, startup stops instead of silently downloading it. To explicitly
+#  permit downloads: S2S_ONLINE=1 ./start-server.sh
 #
 #  Optional env overrides:
 #    S2S_VENV=/path/to/.venv         pick a specific venv
@@ -27,7 +27,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
-HF_CACHE="${HF_HOME:-$HOME/.cache/huggingface}/hub"
+HF_CACHE="${HF_HUB_CACHE:-${HF_HOME:-$HOME/.cache/huggingface}/hub}"
 
 # ── pick a venv ──────────────────────────────────────────────────────────────
 VENV="${S2S_VENV:-}"
@@ -42,23 +42,34 @@ if [ -z "$VENV" ] || [ ! -f "$VENV/bin/activate" ]; then
 fi
 # shellcheck disable=SC1090
 source "$VENV/bin/activate"
+# Use this checkout's source even if the selected venv has a stale editable
+# install or its console script points back at another speech-to-speech clone.
+export PYTHONPATH="$SCRIPT_DIR/src${PYTHONPATH:+:$PYTHONPATH}"
 echo "venv: $VENV"
+echo "source: $SCRIPT_DIR/src"
 
 # ── locate everything on disk ────────────────────────────────────────────────
 have() { [ -n "${1:-}" ]; }
-find_first() { find "$1" "${@:2}" 2>/dev/null | head -1 || true; }
+# Hugging Face creates .no_exist placeholders for files that are not in a repo;
+# those must never count as cached model weights.
+find_first() { find "$1" ! -path '*/.no_exist/*' "${@:2}" 2>/dev/null | head -1 || true; }
 
 PARAKEET_FILE="$(find_first "$HF_CACHE" -name '*.nemo' -path '*parakeet*')"
 LLM_FILE="$(find_first "$HF_CACHE" -name '*.safetensors' -path '*Qwen3-4B*')"
 TTS_FILE="$(find_first "$HF_CACHE" -name '*.safetensors' -path '*Qwen3-TTS*')"
 
 SILERO_JIT="${S2S_VAD_PATH:-}"
+if [ -n "$SILERO_JIT" ] && [ ! -f "$SILERO_JIT" ]; then
+    echo "WARNING: S2S_VAD_PATH is not a file: $SILERO_JIT" >&2
+    SILERO_JIT=""
+fi
 if [ -z "$SILERO_JIT" ]; then
     SILERO_JIT="$(find_first "${TORCH_HOME:-$HOME/.cache/torch}/hub" -name 'silero_vad.jit')"
 fi
 
 NLTK_OK=""
-for dir in "$HOME/nltk_data" /usr/share/nltk_data /usr/local/share/nltk_data; do
+for dir in "${NLTK_DATA:-}" "$HOME/nltk_data" /usr/share/nltk_data /usr/local/share/nltk_data; do
+    [ -n "$dir" ] || continue
     if [ -e "$dir/tokenizers/punkt_tab" ] || [ -e "$dir/tokenizers/punkt_tab.zip" ]; then NLTK_OK="$dir"; break; fi
 done
 
@@ -68,30 +79,40 @@ echo "===================== local assets ====================="
 printf '  %-14s %s\n' "STT parakeet" "${PARAKEET_FILE:-MISSING from HF cache}"
 printf '  %-14s %s\n' "LLM qwen3-4b" "${LLM_FILE:-MISSING from HF cache}"
 printf '  %-14s %s\n' "TTS qwen3-tts" "${TTS_FILE:-MISSING from HF cache}"
-printf '  %-14s %s\n' "VAD silero"   "${SILERO_JIT:-not found (will use torch.hub)}"
-printf '  %-14s %s\n' "NLTK punkt"   "${NLTK_OK:-not found (will try to download)}"
+printf '  %-14s %s\n' "VAD silero"   "${SILERO_JIT:-MISSING (required for offline mode)}"
+printf '  %-14s %s\n' "NLTK punkt"   "${NLTK_OK:-MISSING (required for offline mode)}"
 echo "========================================================"
 echo ""
 
-if have "$PARAKEET_FILE" && have "$LLM_FILE" && have "$TTS_FILE" && [ "${S2S_ONLINE:-0}" != "1" ]; then
+MISSING_ASSETS=()
+have "$PARAKEET_FILE" || MISSING_ASSETS+=("Parakeet STT .nemo checkpoint")
+have "$LLM_FILE" || MISSING_ASSETS+=("Qwen3-4B LLM safetensors")
+have "$TTS_FILE" || MISSING_ASSETS+=("Qwen3-TTS safetensors")
+have "$SILERO_JIT" || MISSING_ASSETS+=("local Silero VAD .jit checkpoint")
+have "$NLTK_OK" || MISSING_ASSETS+=("NLTK punkt_tab data")
+
+if [ "${S2S_ONLINE:-0}" = "1" ]; then
+    export HF_HUB_OFFLINE=0
+    export TRANSFORMERS_OFFLINE=0
+    echo "  S2S_ONLINE=1 -> network access explicitly allowed."
+else
     export HF_HUB_OFFLINE=1
     export TRANSFORMERS_OFFLINE=1
     export HF_HUB_DISABLE_TELEMETRY=1
     export DO_NOT_TRACK=1
     export S2S_NLTK_DOWNLOAD=0
-    echo "  All models found locally -> running fully offline (no network calls)."
-else
-    export HF_HUB_OFFLINE=0
-    export TRANSFORMERS_OFFLINE=0
-    if [ "${S2S_ONLINE:-0}" = "1" ]; then
-        echo "  S2S_ONLINE=1 -> network access allowed."
-    else
-        echo "  Some models are missing locally -> network access allowed for this run."
+    export S2S_VAD_LOCAL_ONLY=1
+    echo "  Network blocked: offline mode is enforced by default."
+    if [ "${#MISSING_ASSETS[@]}" -gt 0 ]; then
+        echo "  ERROR: required offline assets are missing; nothing was downloaded:" >&2
+        printf '    - %s\n' "${MISSING_ASSETS[@]}" >&2
+        echo "  Add those local files or explicitly allow network with S2S_ONLINE=1." >&2
+        exit 1
     fi
+    echo "  All required assets are local; proceeding with zero HF/NLTK/Torch Hub downloads."
 fi
 if have "$SILERO_JIT"; then
     export SILERO_VAD_PATH="$SILERO_JIT"
-    export S2S_VAD_LOCAL_ONLY=1
 fi
 
 # ── TTS backend (GGUF via qwentts.cpp, or the default torch path) ────────────
@@ -120,7 +141,7 @@ echo ""
 echo "  WebSocket: ws://127.0.0.1:${WS_PORT}/v1/realtime"
 echo ""
 
-exec speech-to-speech \
+exec "$VENV/bin/python" -m speech_to_speech.s2s_pipeline \
     --mode realtime \
     --stt parakeet-tdt \
     --llm_backend transformers \
