@@ -108,6 +108,12 @@ class Qwen3TTSHandler(BaseHandler[TTSIn, TTSOut]):
         streaming_chunk_size: int | None = None,
         max_new_tokens: int = DEFAULT_QWEN3_TTS_MAX_NEW_TOKENS,
         blocksize: int = 512,
+        backend: str = "torch",
+        gguf_talker_path: str | Path | None = None,
+        gguf_codec_path: str | Path | None = None,
+        qwentts_library_path: str | Path | None = None,
+        use_fa: bool = True,
+        ref_cache_dir: str | Path | None = None,
         gen_kwargs: dict[str, Any] | None = None,
         cancel_scope: CancelScope | None = None,
         speculative_turns: SpeculativeTurnTracker | None = None,
@@ -132,7 +138,16 @@ class Qwen3TTSHandler(BaseHandler[TTSIn, TTSOut]):
         self._mlx_ref_audio_cache: dict[str, Any] = {}
         self._mlx_temp_ref_audio_files: set[str] = set()
 
+        self.model_backend = "torch"
         self.backend = "mlx" if platform == "darwin" else "faster_qwen3_tts"
+        if platform != "darwin" and str(backend).lower() in ("ggml", "qwentts"):
+            if not gguf_talker_path or not gguf_codec_path:
+                raise ValueError(
+                    "--qwen3_tts_backend ggml requires --qwen3_tts_gguf_talker_path and "
+                    "--qwen3_tts_gguf_codec_path (both GGUF files)."
+                )
+            self.model_backend = "ggml"
+            self.backend = "ggml"
         self.streaming_chunk_size = self._resolve_streaming_chunk_size(streaming_chunk_size)
 
         if self.backend == "mlx":
@@ -156,11 +171,20 @@ class Qwen3TTSHandler(BaseHandler[TTSIn, TTSOut]):
             self.device = device
             self.model_name = model_name
             logger.info(f"Loading Qwen3-TTS model: {self.model_name} via faster-qwen3-tts")
-            self._setup_faster(
-                model_name=self.model_name,
-                dtype=dtype,
-                attn_implementation=attn_implementation,
-            )
+            if self.model_backend == "ggml":
+                self._setup_ggml(
+                    talker_path=gguf_talker_path,
+                    codec_path=gguf_codec_path,
+                    library_path=qwentts_library_path,
+                    use_fa=use_fa,
+                    ref_cache_dir=ref_cache_dir,
+                )
+            else:
+                self._setup_faster(
+                    model_name=self.model_name,
+                    dtype=dtype,
+                    attn_implementation=attn_implementation,
+                )
 
         logger.info(
             "Using Qwen3-TTS streaming chunk size %d (~%.0fms audio per chunk) on %s",
@@ -202,6 +226,45 @@ class Qwen3TTSHandler(BaseHandler[TTSIn, TTSOut]):
             attn_implementation=attn_implementation,
         )
         logger.info("Qwen3-TTS model loaded")
+
+    def _setup_ggml(
+        self,
+        talker_path: Any,
+        codec_path: Any,
+        library_path: Any = None,
+        use_fa: bool = True,
+        ref_cache_dir: Any = None,
+    ) -> None:
+        """Load Qwen3-TTS through the bundled qwentts.cpp (GGUF) runtime."""
+        try:
+            from faster_qwen3_tts import FasterQwen3TTS
+        except ImportError as e:
+            raise ImportError(
+                "faster-qwen3-tts is required for the ggml Qwen3-TTS backend. "
+                "Install with: pip install faster-qwen3-tts"
+            ) from e
+
+        for label, path in (("talker", talker_path), ("codec", codec_path)):
+            expanded = Path(str(path)).expanduser()
+            if not expanded.is_file():
+                raise FileNotFoundError(f"qwen3_tts ggml {label} GGUF not found: {expanded}")
+            if label == "talker":
+                talker_path = str(expanded)
+            else:
+                codec_path = str(expanded)
+
+        logger.info("Loading Qwen3-TTS via qwentts.cpp/GGML: %s + %s", talker_path, codec_path)
+        self.model = FasterQwen3TTS.from_pretrained(
+            self.model_name,
+            backend="ggml",
+            gguf_talker_path=talker_path,
+            gguf_codec_path=codec_path,
+            qwentts_library_path=library_path,
+            qwentts_use_fa=use_fa,
+            qwentts_ref_cache_dir=ref_cache_dir,
+            qwentts_log_level="warning",
+        )
+        logger.info("Qwen3-TTS GGML model loaded")
 
     def _setup_mlx(self, model_name: str) -> None:
         try:
@@ -438,7 +501,7 @@ class Qwen3TTSHandler(BaseHandler[TTSIn, TTSOut]):
     def warmup(self) -> None:
         logger.info(f"Warming up {self.__class__.__name__}")
 
-        if self.backend == "faster_qwen3_tts":
+        if self.backend == "faster_qwen3_tts" and self.model_backend == "torch":
             if self.parity_mode:
                 logger.info("Qwen3-TTS parity mode enabled: skipping CUDA graph capture warmup")
             else:

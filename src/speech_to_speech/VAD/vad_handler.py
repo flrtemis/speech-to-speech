@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import os
 import time
 from collections.abc import Iterator
 from dataclasses import dataclass
@@ -50,6 +51,68 @@ except (ImportError, ModuleNotFoundError) as e:
     logger.warning(f"DeepFilterNet not available for audio enhancement: {e}")
 
 
+def _silero_vad_candidates(explicit: str | None) -> list[str]:
+    """Places the silero VAD JIT checkpoint may already live on disk.
+
+    Checked in order, so a user-provided path always wins. Everything here is
+    a *local* file: when one exists the pipeline never touches the network.
+    """
+    candidates: list[str] = []
+    if explicit:
+        candidates.append(os.path.expanduser(explicit))
+
+    env_path = os.environ.get("SILERO_VAD_PATH") or os.environ.get("S2S_SILERO_VAD_PATH")
+    if env_path:
+        candidates.append(os.path.expanduser(env_path))
+
+    torch_home = os.environ.get("TORCH_HOME")
+    hubs: list[str] = []
+    if torch_home:
+        hubs.append(os.path.join(os.path.expanduser(torch_home), "hub"))
+    hubs.append(os.path.join(os.path.expanduser("~"), ".cache", "torch", "hub"))
+    hubs.append(os.path.join(os.path.expanduser("~"), ".torch", "hub"))
+
+    for hub in hubs:
+        # layout produced by torch.hub.load("snakers4/silero-vad", ...)
+        candidates.append(os.path.join(hub, "snakers4_silero-vad_master", "src", "silero_vad", "data", "silero_vad.jit"))
+        candidates.append(os.path.join(hub, "snakers4_silero-vad_master", "silero_vad.jit"))
+        candidates.append(os.path.join(hub, "snakers4_silero-vad_master", "files", "silero_vad.jit"))
+        candidates.append(os.path.join(hub, "checkpoints", "silero_vad.jit"))
+    return candidates
+
+
+def load_silero_vad(model_path: str | None = None):
+    """Load silero VAD, preferring an already-downloaded local checkpoint.
+
+    Returns (model, source) where source describes where it came from. Only
+    falls back to torch.hub (which needs the network on a cold cache) when no
+    local copy can be found.
+    """
+    for candidate in _silero_vad_candidates(model_path):
+        if candidate and os.path.isfile(candidate):
+            try:
+                model = torch.jit.load(candidate, map_location="cpu")
+                logger.info("Silero VAD loaded from local checkpoint: %s", candidate)
+                return model, candidate
+            except Exception as e:  # corrupt file / version mismatch -> keep looking
+                logger.warning("Could not load local silero VAD checkpoint %s: %s", candidate, e)
+
+    if os.environ.get("S2S_VAD_LOCAL_ONLY") == "1":
+        raise FileNotFoundError(
+            "S2S_VAD_LOCAL_ONLY=1 but no local silero_vad.jit was found. "
+            "Set --vad_model_path or SILERO_VAD_PATH to the checkpoint file."
+        )
+
+    logger.info("No local silero VAD checkpoint found; falling back to torch.hub (may use the network)")
+    model, _ = torch.hub.load(
+        "snakers4/silero-vad",
+        "silero_vad",
+        trust_repo=True,
+        skip_validation=True,
+    )
+    return model, "torch.hub"
+
+
 class VADHandler(BaseHandler[VADIn, VADOut]):
     """
     Handles voice activity detection. When voice activity is detected, audio will be accumulated until the end of speech is detected and then passed
@@ -74,6 +137,7 @@ class VADHandler(BaseHandler[VADIn, VADOut]):
         speculative_reopen_ms: int = 1000,
         unanswered_reopen_ms: int = 7000,
         short_segment_merge_ms: int = 0,
+        vad_model_path: str | None = None,
     ) -> None:
         self.should_listen = should_listen
         self.sample_rate = sample_rate
@@ -92,12 +156,8 @@ class VADHandler(BaseHandler[VADIn, VADOut]):
         self.unanswered_reopen_ms = max(self.speculative_reopen_ms, unanswered_reopen_ms)
         self.short_segment_merge_ms = max(0, short_segment_merge_ms)
         self._last_turn_detection: dict | None = None
-        self.model, _ = torch.hub.load(
-            "snakers4/silero-vad",
-            "silero_vad",
-            trust_repo=True,
-            skip_validation=True,
-        )
+        self.vad_model_path = vad_model_path
+        self.model, self.vad_model_source = load_silero_vad(vad_model_path)
         self.iterator = VADIterator(
             self.model,
             threshold=thresh,

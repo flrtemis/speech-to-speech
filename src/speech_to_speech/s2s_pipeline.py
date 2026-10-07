@@ -65,15 +65,48 @@ from speech_to_speech.STT.transcription_notifier import TranscriptionNotifier
 from speech_to_speech.utils.thread_manager import ThreadManager
 from speech_to_speech.VAD.vad_handler import VADHandler
 
-# Ensure that the necessary NLTK resources are available
-try:
-    nltk.data.find("tokenizers/punkt_tab")
-except (LookupError, OSError):
-    nltk.download("punkt_tab")
-try:
-    nltk.data.find("tokenizers/averaged_perceptron_tagger_eng")
-except (LookupError, OSError):
-    nltk.download("averaged_perceptron_tagger_eng")
+# Ensure that the necessary NLTK resources are available.
+#
+# These are only needed for sentence splitting (punkt). They are looked up on
+# disk first so a machine with them already installed never touches the
+# network; downloads are skipped entirely when S2S_NLTK_DOWNLOAD=0.
+
+
+def _nltk_resource_present(resource: str) -> bool:
+    try:
+        nltk.data.find(resource)
+        return True
+    except (LookupError, OSError):
+        pass
+    # nltk.data.find() does not always see zipped corpora, so check the search
+    # path directly as a fallback.
+    for base in nltk.data.path:
+        expanded = os.path.expanduser(base)
+        if os.path.exists(os.path.join(expanded, resource)) or os.path.exists(
+            os.path.join(expanded, resource + ".zip")
+        ):
+            return True
+    return False
+
+
+def _ensure_nltk_resource(resource: str, download_name: str) -> None:
+    if _nltk_resource_present(resource):
+        return
+    if os.environ.get("S2S_NLTK_DOWNLOAD", "1") == "0":
+        logging.getLogger(__name__).warning(
+            "NLTK resource %s is missing and S2S_NLTK_DOWNLOAD=0; skipping download.", download_name
+        )
+        return
+    try:
+        nltk.download(download_name, quiet=True)
+    except Exception as e:  # offline machine -> warn, do not crash
+        logging.getLogger(__name__).warning(
+            "Could not download NLTK resource %s (%s). The pipeline will continue offline.", download_name, e
+        )
+
+
+_ensure_nltk_resource("tokenizers/punkt_tab", "punkt_tab")
+_ensure_nltk_resource("taggers/averaged_perceptron_tagger_eng", "averaged_perceptron_tagger_eng")
 
 # caching allows ~50% compilation time reduction
 # see https://docs.google.com/document/d/1y5CRfMLdwEoF1nTk9q8qEu1mgMUuUtvhklPKJ2emLU8/edit#heading=h.o2asbxsrp1ma

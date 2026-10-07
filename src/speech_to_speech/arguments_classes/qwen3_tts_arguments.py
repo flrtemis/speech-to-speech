@@ -10,6 +10,35 @@ class Qwen3TTSHandlerArguments:
             "help": "The Qwen3-TTS model to use (HuggingFace Hub ID or local path). Default is 'Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice'. On Apple Silicon, Qwen/* model IDs are auto-mapped to the corresponding mlx-community/* model when possible, defaulting to the 6bit MLX variant unless the model name already pins a specific suffix."
         },
     )
+    qwen3_tts_backend: str = field(
+        default="torch",
+        metadata={
+            "help": "Qwen3-TTS runtime backend on CUDA. 'torch' (default) uses faster-qwen3-tts with CUDA "
+            "graphs. 'ggml' uses the bundled qwentts.cpp runtime with GGUF weights — much lower VRAM, "
+            "optional flash attention. Requires --qwen3_tts_gguf_talker_path and "
+            "--qwen3_tts_gguf_codec_path, plus the qwentts_cpp library (pip install qwentts-cpp)."
+        },
+    )
+    qwen3_tts_gguf_talker_path: Optional[str] = field(
+        default=None,
+        metadata={"help": "Path to the talker GGUF (e.g. qwen-talker-1.7b-customvoice-BF16.gguf). Required for --qwen3_tts_backend ggml."},
+    )
+    qwen3_tts_gguf_codec_path: Optional[str] = field(
+        default=None,
+        metadata={"help": "Path to the codec/tokenizer GGUF (e.g. qwen-tokenizer-12hz-BF16.gguf). Required for --qwen3_tts_backend ggml."},
+    )
+    qwen3_tts_qwentts_library_path: Optional[str] = field(
+        default=None,
+        metadata={"help": "Optional explicit path to the libqwen shared library used by the ggml backend."},
+    )
+    qwen3_tts_use_fa: bool = field(
+        default=True,
+        metadata={"help": "Use flash-attention kernels in the ggml backend. Default is True."},
+    )
+    qwen3_tts_ref_cache_dir: Optional[str] = field(
+        default=None,
+        metadata={"help": "Cache directory for ggml voice-clone references (.spk/.rvq) extracted from reference audio."},
+    )
     qwen3_tts_device: str = field(
         default="cuda",
         metadata={

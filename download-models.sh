@@ -1,75 +1,71 @@
 #!/usr/bin/env bash
-# ──────────────────────────────────────────────────────────────────────
-#  Download all pipeline model weights to ~/models/ with original
-#  filenames and extensions — no HF cache blobs, no symlinks.
+# ─────────────────────────────────────────────────────────────────────────────
+#  download-models.sh  —  fetch the pipeline's models into ~/models
 #
-#  After this runs you own the files outright:
-#    ~/models/parakeet-tdt-1.1b/      → STT weights
-#    ~/models/gemma-3-4b-it/          → VLM weights
-#    ~/models/qwen3-tts-1.7b/         → TTS weights
-#    ~/models/silero-vad/             → VAD weights
+#  Downloads real weight files with their original names (no HF blob cache,
+#  no symlinks). Re-running it only fetches what is missing.
 #
-#  Uses: huggingface-cli download --local-dir
-#  That flag downloads files with their original names directly into
-#  the target folder — no blob cache, no content-hash renaming.
-# ──────────────────────────────────────────────────────────────────────
-set -e
+#    bash download-models.sh                 # into ~/models
+#    MODELS_DIR=/mnt/d/models bash download-models.sh
+#
+#  Models (these are the ones the pipeline actually loads):
+#    ~/models/parakeet-tdt-0.6b-v3/    STT   (nvidia/parakeet-tdt-0.6b-v3)
+#    ~/models/Qwen3-4B-Instruct-2507/  LLM   (Qwen/Qwen3-4B-Instruct-2507)
+#    ~/models/qwen3-tts-1.7b/          TTS   (Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice)
+#    ~/models/silero-vad/              VAD   (snakers4/silero-vad, .jit file)
+#
+#  To run the pipeline straight from these folders:
+#    TORCH_HOME=~/models/torch ./start-server.sh
+#  (start-server.sh auto-detects everything, including local checkpoints)
+# ─────────────────────────────────────────────────────────────────────────────
+set -euo pipefail
 
-MODELS_DIR="$HOME/models"
+MODELS_DIR="${MODELS_DIR:-$HOME/models}"
 mkdir -p "$MODELS_DIR"
 
-VENV_PYTHON="/home/l3ung/speech-to-speech-0.2.10/.venv/bin/python"
-HF_CLI="/home/l3ung/speech-to-speech-0.2.10/.venv/bin/huggingface-cli"
-
-if [ ! -f "$HF_CLI" ]; then
-    echo "ERROR: huggingface-cli not found in venv. Run start-server.sh first."
+# Find an hf CLI: prefer the project venv, then PATH, then a module fallback.
+HF_CLI=""
+for candidate in "${S2S_VENV:-}/bin/hf" "$PWD/.venv/bin/hf" "$HOME/speech-to-speech-0.2.10/.venv/bin/hf" \
+                 "$(command -v hf 2>/dev/null || true)" \
+                 "${S2S_VENV:-}/bin/huggingface-cli" "$PWD/.venv/bin/huggingface-cli" \
+                 "$(command -v huggingface-cli 2>/dev/null || true)"; do
+    if [ -n "$candidate" ] && [ -x "$candidate" ]; then HF_CLI="$candidate"; break; fi
+done
+if [ -z "$HF_CLI" ]; then
+    echo "ERROR: no 'hf' / 'huggingface-cli' found." >&2
+    echo "Install it with:  pip install -U 'huggingface_hub[cli]'" >&2
     exit 1
 fi
+echo "using: $HF_CLI"
+echo "target: $MODELS_DIR"
+echo
 
-echo ""
-echo "╔══════════════════════════════════════════════════════════════╗"
-echo "║   Downloading model weights to ~/models/                     ║"
-echo "║   Files saved with original names and extensions.            ║"
-echo "║   No HF blob cache. These files are yours.                   ║"
-echo "╚══════════════════════════════════════════════════════════════╝"
-echo ""
+fetch() { # $1 = repo id, $2 = destination folder
+    echo "== $1"
+    "$HF_CLI" download "$1" --local-dir "$MODELS_DIR/$2"
+    echo
+}
 
-# ── 1. STT: nvidia/parakeet-tdt-1.1b ─────────────────────────────────
-echo "▶ STT  nvidia/parakeet-tdt-1.1b  →  $MODELS_DIR/parakeet-tdt-1.1b"
-"$HF_CLI" download nvidia/parakeet-tdt-1.1b \
-    --local-dir "$MODELS_DIR/parakeet-tdt-1.1b" \
-    --local-dir-use-symlinks False
-echo "  ✓ STT done"
-echo ""
+fetch nvidia/parakeet-tdt-0.6b-v3           parakeet-tdt-0.6b-v3
+fetch Qwen/Qwen3-4B-Instruct-2507           Qwen3-4B-Instruct-2507
+fetch Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice  qwen3-tts-1.7b
 
-# ── 2. VLM: google/gemma-3-4b-it ─────────────────────────────────────
-echo "▶ VLM  google/gemma-3-4b-it  →  $MODELS_DIR/gemma-3-4b-it"
-echo "  (same Gemma family as the Space's gemma-4-31B-it, fits your 16 GB VRAM)"
-"$HF_CLI" download google/gemma-3-4b-it \
-    --local-dir "$MODELS_DIR/gemma-3-4b-it" \
-    --local-dir-use-symlinks False
-echo "  ✓ VLM done"
-echo ""
+# silero VAD: the pipeline wants the .jit checkpoint, which lives in the repo's
+# src/silero_vad/data/ folder. Copy it out to a stable location afterwards.
+echo "== snakers4/silero-vad (VAD checkpoint)"
+"$HF_CLI" download snakers4/silero-vad --local-dir "$MODELS_DIR/silero-vad"
+SILERO_SRC="$(find "$MODELS_DIR/silero-vad" -name 'silero_vad.jit' | head -1 || true)"
+if [ -n "$SILERO_SRC" ]; then
+    mkdir -p "$MODELS_DIR/torch/hub/snakers4_silero-vad_master/src/silero_vad/data"
+    cp -n "$SILERO_SRC" "$MODELS_DIR/torch/hub/snakers4_silero-vad_master/src/silero_vad/data/silero_vad.jit"
+    echo "  VAD checkpoint ready for TORCH_HOME=$MODELS_DIR/torch"
+else
+    echo "  NOTE: no .jit in that repo snapshot; the pipeline will fall back to torch.hub."
+fi
+echo
 
-# ── 3. TTS: Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice ─────────────────────
-echo "▶ TTS  Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice  →  $MODELS_DIR/qwen3-tts-1.7b"
-"$HF_CLI" download Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice \
-    --local-dir "$MODELS_DIR/qwen3-tts-1.7b" \
-    --local-dir-use-symlinks False
-echo "  ✓ TTS done"
-echo ""
-
-# ── 4. VAD: snakers4/silero-vad ───────────────────────────────────────
-echo "▶ VAD  snakers4/silero-vad  →  $MODELS_DIR/silero-vad"
-"$HF_CLI" download snakers4/silero-vad \
-    --local-dir "$MODELS_DIR/silero-vad" \
-    --local-dir-use-symlinks False
-echo "  ✓ VAD done"
-echo ""
-
-echo "╔══════════════════════════════════════════════════════════════╗"
-echo "║   All weights downloaded to ~/models/                        ║"
-echo "║   Run: ls -lh ~/models/*/  to see every file.               ║"
-echo "║   Next: run ./start-server.sh                                ║"
-echo "╚══════════════════════════════════════════════════════════════╝"
-echo ""
+echo "Done. Files are yours, with their original names:"
+du -sh "$MODELS_DIR"/* 2>/dev/null || true
+echo
+echo "Run the pipeline against this folder:"
+echo "    TORCH_HOME=$MODELS_DIR/torch ./start-server.sh"

@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from typing import Optional
 
 
 @dataclass
@@ -77,5 +78,14 @@ class VADHandlerArguments:
         default=0,
         metadata={
             "help": "When greater than 0, adjacent VAD segments below min_speech_ms are held and stitched for this many milliseconds before being discarded. Fragments shorter than 100 ms of active speech are never held. Useful with very low min_silence_ms values."
+        },
+    )
+
+    vad_model_path: Optional[str] = field(
+        default=None,
+        metadata={
+            "help": "Path to a local silero VAD .jit checkpoint. When unset, common torch.hub cache "
+            "locations are searched before the network is used. Set S2S_VAD_LOCAL_ONLY=1 to forbid "
+            "network fallback entirely."
         },
     )
