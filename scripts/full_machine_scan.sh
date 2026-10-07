@@ -22,6 +22,8 @@ IS_GNU_FIND=0
 find --version 2>/dev/null | grep -q GNU && IS_GNU_FIND=1
 IS_MAC=0
 [ "$(uname -s)" = "Darwin" ] && IS_MAC=1
+IS_WSL=0
+grep -qi microsoft /proc/version 2>/dev/null && IS_WSL=1
 
 log() { printf '%s\n' "$*"; }
 
@@ -82,6 +84,7 @@ echo "generated : $(date)"
 echo "host      : $(hostname 2>/dev/null)"
 echo "user      : $(whoami 2>/dev/null)"
 echo "os/kernel : $(uname -srm)"
+echo "wsl       : $([ "$IS_WSL" = 1 ] && echo yes || echo no)"
 [ -r /etc/os-release ] && grep -E '^PRETTY_NAME=' /etc/os-release
 
 echo
@@ -170,6 +173,59 @@ if command -v docker >/dev/null 2>&1; then
     echo "-- docker images (models sometimes live inside images):"
     docker images --format '{{.Repository}}:{{.Tag}}  {{.Size}}' 2>/dev/null | head -25
 fi
+
+echo
+echo "===== 6b. WINDOWS SIDE, SEEN FROM WSL (/mnt/*) ====="
+if [ -d /mnt ] && ls /mnt >/dev/null 2>&1; then
+    echo "-- mounts present under /mnt:"
+    ls -1 /mnt 2>/dev/null | sed 's/^/   /'
+    for win in /mnt/[a-z]; do
+        [ -d "$win/Users" ] || continue
+        for prof in "$win"/Users/*; do
+            [ -d "$prof" ] || continue
+            case "${prof##*/}" in Public|Default|"All Users"|"Default User") continue;; esac
+            found=""
+            for rel in .ollama/models .lmstudio/models .cache/lm-studio/models \
+                       .cache/huggingface/hub .cache/whisper .cache/piper \
+                       AppData/Local/nomic.ai AppData/Roaming/nomic.ai AppData/Local/Jan \
+                       .cache/text-generation-webui ComfyUI comfy ComfyUI_windows_portable \
+                       stable-diffusion-webui Documents/ComfyUI; do
+                [ -e "$prof/$rel" ] && found="$found $rel"
+            done
+            [ -n "$found" ] && {
+                echo "-- Windows profile: $prof"
+                for rel in $found; do
+                    echo "   [$(dusize "$prof/$rel")] $rel"
+                done
+            }
+        done
+        # model-ish dirs directly on the Windows drive root / common spots
+        for d in "$win/models" "$win/AI" "$win/ComfyUI" "$win/ComfyUI_windows_portable"; do
+            [ -d "$d" ] && echo "-- [$(dusize "$d")] $d"
+        done
+    done
+else
+    echo "not inside WSL (no /mnt) - skipping"
+fi
+
+echo
+echo "===== 6c. THIS PROJECT'S OWN FOLDERS (every copy on disk) ====="
+for r in $ROOTS; do
+    [ -d "$r" ] || continue
+    find "$r" -maxdepth 6 -type d -name 'speech-to-speech*' 2>/dev/null | head -20 | while IFS= read -r d; do
+        echo "== $d"
+        for sub in .venv models cache models_cache hf_cache; do
+            [ -d "$d/$sub" ] && echo "   [$(dusize "$d/$sub")] $sub/"
+        done
+        find "$d" -maxdepth 2 -type d -name '*.egg-info' 2>/dev/null | head -2 | sed 's/^/   pkg: /'
+        [ -d "$d/.venv" ] && {
+            pkgs=$(find "$d/.venv/lib" -maxdepth 3 -name '*.dist-info' -type d 2>/dev/null | sed 's#.*/##; s/\.dist-info$//' \
+                   | grep -Ei '^(torch|transformers|nano-parakeet|faster-qwen3-tts|qwen-tts|kokoro|faster-whisper|funasr|speech-to-speech|mlx)' \
+                   | sort -u | tr '\n' ' ')
+            echo "   venv pkgs: $pkgs"
+        }
+    done
+done
 
 echo
 echo "===== 7. PYTHON ENVIRONMENTS (find old GPU/audio envs you forgot) ====="
