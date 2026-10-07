@@ -117,14 +117,16 @@ class ResponsesApiModelHandler(BaseHandler[LLMIn, LLMOut]):
         else:
             self.client = OpenAI(api_key=api_key, base_url=base_url)
         self._ollama_models_refresh_at = 0.0
-        self._extra_body = (
-            {"chat_template_kwargs": {"enable_thinking": False}}
-            if disable_thinking
-            and base_url is not None
-            and base_url != "https://api.openai.com/v1"  # Only for other than OpenAI Official Server
-            and not self.ollama_enabled
-            else None
-        )
+        if self.ollama_enabled:
+            # Ollama's OpenAI-compatible Responses API has its own `think` flag;
+            # chat_template_kwargs is a provider-specific field for other APIs.
+            self._extra_body = {"think": False} if disable_thinking else None
+        else:
+            self._extra_body = (
+                {"chat_template_kwargs": {"enable_thinking": False}}
+                if disable_thinking and base_url is not None and base_url != "https://api.openai.com/v1"
+                else None
+            )
         self.compactor = build_compactor(self._build_compaction_generate_fn()) if compact_history else None
         self.warmup()
 
@@ -199,6 +201,7 @@ class ResponsesApiModelHandler(BaseHandler[LLMIn, LLMOut]):
                 },
                 {"type": "message", "role": "user", "content": [{"type": "input_text", "text": "Hello"}]},
             ],
+            extra_body=self._extra_body,
             timeout=self.request_timeout,
         )
         end = time.time()
@@ -209,6 +212,7 @@ class ResponsesApiModelHandler(BaseHandler[LLMIn, LLMOut]):
         client = self.client
         model_name = self.model_name
         timeout = self.request_timeout
+        extra_body = self._extra_body
 
         def generate(system: str, user: str) -> str:
             response = client.responses.create(
@@ -225,6 +229,7 @@ class ResponsesApiModelHandler(BaseHandler[LLMIn, LLMOut]):
                         "content": [{"type": "input_text", "text": user}],
                     },
                 ],
+                extra_body=extra_body,
                 timeout=timeout,
             )
             return response.output_text
@@ -259,6 +264,10 @@ class ResponsesApiModelHandler(BaseHandler[LLMIn, LLMOut]):
         clean_text = ""
         input_tokens = 0
         output_tokens = 0
+        request_kwargs = dict(optional_kwargs)
+        if self.ollama_enabled:
+            # Voice replies should stay concise and bound worst-case generation time.
+            request_kwargs.setdefault("max_output_tokens", 128)
         try:
             api_response = self.client.responses.create(
                 model=self._model_for_runtime_config(runtime_config),
@@ -266,7 +275,7 @@ class ResponsesApiModelHandler(BaseHandler[LLMIn, LLMOut]):
                 stream=self.stream,
                 extra_body=self._extra_body,
                 timeout=self.request_timeout,
-                **optional_kwargs,
+                **request_kwargs,
             )
             if isinstance(api_response, Stream):
                 cancelled = False

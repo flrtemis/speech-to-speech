@@ -85,6 +85,7 @@ if [ "$LLM_BACKEND" = "ollama" ]; then
         --model_name "$LLM_MODEL"
         --responses_api_base_url "$OLLAMA_BASE_URL"
         --responses_api_api_key "${S2S_OLLAMA_API_KEY:-ollama}"
+        --stream_batch_sentences 1
     )
     echo "LLM backend: Ollama ($OLLAMA_URL) — $LLM_MODEL"
 elif [ "$LLM_BACKEND" = "transformers" ]; then

@@ -1,4 +1,7 @@
 import logging
+import os
+from queue import Queue
+from threading import Event
 from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
@@ -302,6 +305,32 @@ def test_disable_thinking_passes_extra_body():
     assert captured["extra_body"] == {"chat_template_kwargs": {"enable_thinking": False}}
 
 
+def test_ollama_setup_uses_native_think_flag_for_warmup():
+    client = SimpleNamespace(responses=SimpleNamespace(create=MagicMock()))
+    setup_kwargs = {
+        "model_name": "gemma4:latest",
+        "base_url": "http://127.0.0.1:11434/v1",
+        "api_key": "ollama",
+        "disable_thinking": True,
+        "compact_history": False,
+    }
+
+    with (
+        patch.dict(
+            os.environ,
+            {
+                "S2S_OLLAMA_ENABLED": "1",
+                "S2S_OLLAMA_MODELS": "gemma4:latest",
+                "S2S_OLLAMA_URL": "http://127.0.0.1:11434",
+            },
+        ),
+        patch("speech_to_speech.LLM.responses_api_language_model.OpenAI", return_value=client),
+    ):
+        ResponsesApiModelHandler(Event(), Queue(), Queue(), setup_kwargs=setup_kwargs)
+
+    assert client.responses.create.call_args.kwargs["extra_body"] == {"think": False}
+
+
 def test_no_disable_thinking_omits_extra_body():
     handler = _make_handler(disable_thinking=False)
     captured = {}
@@ -324,6 +353,8 @@ def test_no_disable_thinking_omits_extra_body():
 
 def test_generate_uses_allowlisted_model_from_live_session_config():
     handler = _make_handler()
+    handler.ollama_enabled = True
+    handler._extra_body = {"think": False}
     handler.ollama_models = frozenset({"default-ollama", "chosen-ollama"})
     runtime_config = _make_runtime_config()
     runtime_config.session.model = "chosen-ollama"
@@ -352,6 +383,8 @@ def test_generate_uses_allowlisted_model_from_live_session_config():
     )
 
     assert captured["model"] == "chosen-ollama"
+    assert captured["extra_body"] == {"think": False}
+    assert captured["max_output_tokens"] == 128
 
 
 def test_generate_accepts_a_newly_installed_ollama_model_after_refresh():
