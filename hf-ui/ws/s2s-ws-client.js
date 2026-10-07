@@ -51,6 +51,7 @@
  *   session POST and dials it directly — no load balancer in between.
  * @property {string} voice
  * @property {string} instructions
+ * @property {string} [model] Allowlisted local Ollama model name.
  * @property {MediaStream} [micStream] Live mic stream. Provide this OR `acquireMic`.
  * @property {() => Promise<MediaStream>} [acquireMic] Lazily obtain the mic stream,
  *   called only once a session is actually granted (after any queue wait). Lets the
@@ -622,7 +623,7 @@ export class S2sWsRealtimeClient extends EventTarget {
       case "session.created":
         // Server-side defaults for the s2s pipeline are already what we
         // want (server_vad, whisper-1 transcription, PCM16 16k in / 24k
-        // out). We only push the user-tunable bits: voice + instructions.
+        // out). We only push user-tunable bits: voice, instructions, and model.
         this._sendSessionUpdate();
         this._sessionConfigured = true;
         if (this._status === "connecting") this._setStatus("connected");
@@ -897,6 +898,7 @@ export class S2sWsRealtimeClient extends EventTarget {
         output: { voice: this.options.voice },
       },
     };
+    if (this.options.model) session.model = this.options.model;
     // Tools are declared here; the backend already accepts them in
     // session.update and emits response.function_call_arguments.done when the
     // model decides to call one. Only include the keys when we actually have
@@ -908,13 +910,14 @@ export class S2sWsRealtimeClient extends EventTarget {
     this._send({ type: "session.update", session });
   }
 
-  /** Update voice/instructions on a live session without tearing down. */
-  /** @param {{ voice?: string; instructions?: string }} patch */
+  /** Update voice, instructions, or selected model without tearing down. */
+  /** @param {{ voice?: string; instructions?: string; model?: string }} patch */
   updateSession(patch) {
     /** @type {Record<string, any>} */
     const session = { type: "realtime" };
     if (patch.instructions) session.instructions = patch.instructions;
     if (patch.voice) session.audio = { output: { voice: patch.voice } };
+    if (patch.model) session.model = patch.model;
     if (Object.keys(session).length > 1) {
       this._send({ type: "session.update", session });
     }

@@ -40,6 +40,7 @@ const STORAGE_KEYS = {
   // (in LB mode the browser never learns the LB address — it POSTs /api/session).
   directUrl: "s2s.ws.directUrl",
   voice: "s2s.ws.voice",
+  ollamaModel: "s2s.ws.ollamaModel",
   instructions: "s2s.ws.instructions",
   tools: "s2s.ws.tools",
   searchKey: "s2s.ws.searchKey",
@@ -100,6 +101,7 @@ function loadSettings() {
   return {
     directUrl: localStorage.getItem(STORAGE_KEYS.directUrl) || "",
     voice: localStorage.getItem(STORAGE_KEYS.voice) || DEFAULT_VOICE,
+    ollamaModel: localStorage.getItem(STORAGE_KEYS.ollamaModel) || "",
     instructions: localStorage.getItem(STORAGE_KEYS.instructions) || DEFAULT_INSTRUCTIONS,
     noiseGate: loadGateThreshold(),
   };
@@ -122,6 +124,7 @@ function loadGateThreshold() {
 function saveSettings(s) {
   localStorage.setItem(STORAGE_KEYS.directUrl, s.directUrl);
   localStorage.setItem(STORAGE_KEYS.voice, s.voice);
+  localStorage.setItem(STORAGE_KEYS.ollamaModel, s.ollamaModel || "");
   localStorage.setItem(STORAGE_KEYS.instructions, s.instructions);
   localStorage.setItem(STORAGE_KEYS.noiseGate, String(s.noiseGate));
 }
@@ -238,6 +241,14 @@ const connField = $("#conn-field");
 const connHint = $("#conn-hint");
 /** @type {HTMLSelectElement} */
 const inputVoice = $("#voice");
+/** @type {HTMLElement} */
+const ollamaModelField = $("#ollama-model-field");
+/** @type {HTMLSelectElement} */
+const inputOllamaModel = $("#ollama-model");
+/** @type {HTMLElement} */
+const ollamaModelStatus = $("#ollama-model-status");
+/** @type {HTMLButtonElement} */
+const ollamaRefreshButton = $("#ollama-refresh");
 /** @type {HTMLTextAreaElement} */
 const inputInstructions = $("#instructions");
 /** @type {HTMLInputElement} */
@@ -274,6 +285,7 @@ let lbMode = false;
 // way a missing/unreachable config (e.g. static hosting) leaves the field
 // usable rather than locked.
 let allowDirect = true;
+let ollamaEnabled = false;
 
 // ── Tool state ──────────────────────────────────────────────────────────────
 let toolsEnabled = loadTools();
@@ -399,6 +411,7 @@ function setCaption(text, kind = "") {
 function openSettings() {
   syncConnectionUi();
   inputVoice.value = settings.voice;
+  inputOllamaModel.value = settings.ollamaModel;
   inputInstructions.value = settings.instructions;
   syncGateUi();
   updateRestartAvailability();
@@ -819,6 +832,77 @@ async function execWebSearch(query) {
   return lines.length > 1 ? lines.join("\n") : `${lines[0]}\nNo results found.`;
 }
 
+/** Human-readable size for the small amount of metadata returned by Ollama. */
+function formatModelSize(bytes) {
+  if (!Number.isFinite(bytes) || bytes <= 0) return "";
+  const units = ["B", "KB", "MB", "GB", "TB"];
+  let value = bytes;
+  let unit = 0;
+  while (value >= 1024 && unit < units.length - 1) {
+    value /= 1024;
+    unit += 1;
+  }
+  return `${value.toFixed(value < 10 && unit > 0 ? 1 : 0)} ${units[unit]}`;
+}
+
+/** Load installed local Ollama models through the same-origin UI server. */
+async function refreshOllamaModels() {
+  if (!ollamaEnabled) return;
+  ollamaRefreshButton.disabled = true;
+  inputOllamaModel.disabled = true;
+  ollamaModelStatus.classList.remove("error");
+  ollamaModelStatus.textContent = "Checking local Ollama models…";
+  const priorChoice = inputOllamaModel.value;
+  try {
+    const response = await fetch("api/ollama/models", { cache: "no-store" });
+    if (!response.ok) {
+      let detail = "Ollama model list request failed.";
+      try { detail = (await response.json()).detail || detail; } catch {}
+      throw new Error(detail);
+    }
+    const data = await response.json();
+    const models = Array.isArray(data.models)
+      ? data.models.filter((model) => model && typeof model.name === "string" && model.name)
+      : [];
+    inputOllamaModel.replaceChildren();
+    if (!models.length) {
+      const option = document.createElement("option");
+      option.value = "";
+      option.textContent = "No local models found";
+      inputOllamaModel.append(option);
+      ollamaModelStatus.textContent = "No local Ollama models are installed.";
+      return;
+    }
+
+    for (const model of models) {
+      const option = document.createElement("option");
+      option.value = model.name;
+      const size = formatModelSize(model.size);
+      option.textContent = size ? `${model.name} · ${size}` : model.name;
+      inputOllamaModel.append(option);
+    }
+    const names = new Set(models.map((model) => model.name));
+    const selected = [priorChoice, settings.ollamaModel, data.defaultModel]
+      .find((name) => typeof name === "string" && names.has(name)) || models[0].name;
+    inputOllamaModel.value = selected;
+    if (!settings.ollamaModel || !names.has(settings.ollamaModel)) {
+      settings.ollamaModel = selected;
+      saveSettings(settings);
+    }
+    inputOllamaModel.disabled = false;
+    ollamaModelStatus.textContent = `${models.length} local model${models.length === 1 ? "" : "s"}. Save to apply a change to your next reply.`;
+  } catch (error) {
+    ollamaModelStatus.classList.add("error");
+    ollamaModelStatus.textContent = error instanceof Error
+      ? `${error.message} Check Ollama, then refresh.`
+      : "Couldn't load local models. Check Ollama, then refresh.";
+  } finally {
+    ollamaRefreshButton.disabled = false;
+  }
+}
+
+ollamaRefreshButton.addEventListener("click", () => { void refreshOllamaModels(); });
+
 /** Learn server config (search key + connection target), then refresh the UI. */
 async function fetchConfig() {
   try {
@@ -831,6 +915,15 @@ async function fetchConfig() {
       allowDirect = json.allowDirect ?? !lbMode;
       // The conversation-time limiter rides on the LB being present.
       limiterOn = lbMode;
+      ollamaEnabled = !!json.ollama;
+      ollamaModelField.hidden = !ollamaEnabled;
+      if (ollamaEnabled) {
+        if (!settings.ollamaModel && typeof json.ollamaDefaultModel === "string") {
+          settings.ollamaModel = json.ollamaDefaultModel;
+          saveSettings(settings);
+        }
+        void refreshOllamaModels();
+      }
     }
     // Non-OK response: leave the fail-open default (allowDirect = true).
   } catch {
@@ -909,6 +1002,7 @@ function readSettingsFromForm() {
   return {
     directUrl: allowDirect ? inputLbUrl.value.trim() : settings.directUrl,
     voice: inputVoice.value || DEFAULT_VOICE,
+    ollamaModel: ollamaEnabled ? (inputOllamaModel.value || settings.ollamaModel) : settings.ollamaModel,
     instructions: inputInstructions.value.trim() || DEFAULT_INSTRUCTIONS,
     noiseGate: readGateThreshold(),
   };
@@ -957,13 +1051,22 @@ settingsForm.addEventListener("submit", (event) => {
   const submitter = /** @type {HTMLButtonElement | null} */ ((/** @type {SubmitEvent} */ (event)).submitter);
   if (submitter?.value !== "save") return;
 
+  const previousOllamaModel = settings.ollamaModel;
   settings = readSettingsFromForm();
   saveSettings(settings);
 
-  // Voice + instructions can apply to a live session without reconnecting; a
-  // changed connection URL only takes effect on the next restart.
+  // Voice, instructions, and model apply to a live session without reconnecting;
+  // a changed connection URL only takes effect on the next restart.
   if (client && LIVE_STATES.has(currentState)) {
-    client.updateSession({ voice: settings.voice, instructions: effectiveInstructions() });
+    client.updateSession({
+      voice: settings.voice,
+      instructions: effectiveInstructions(),
+      ...(ollamaEnabled && settings.ollamaModel ? { model: settings.ollamaModel } : {}),
+    });
+  }
+  if (ollamaEnabled && previousOllamaModel !== settings.ollamaModel && settings.ollamaModel) {
+    ollamaModelStatus.classList.remove("error");
+    ollamaModelStatus.textContent = `Saved. ${settings.ollamaModel} will handle the next reply.`;
   }
 });
 
@@ -1166,6 +1269,7 @@ async function doStart(audioContext = null) {
     ...target,
     voice: settings.voice,
     instructions: effectiveInstructions(),
+    ...(ollamaEnabled && settings.ollamaModel ? { model: settings.ollamaModel } : {}),
     acquireMic: acquireMicStream,
     tools: activeToolDefs(),
     noiseGate: gateParams(settings.noiseGate),

@@ -19,7 +19,8 @@ is off unless BOTH `LOAD_BALANCER_URL` and `SPACE_ID` are set, so it runs only o
 the live Space, never locally (even with the LB exported for testing).
 
 Endpoints:
-  GET  /api/config           -> { search, lb, allowDirect, auth }
+  GET  /api/config           -> { search, lb, allowDirect, auth, ollama, ollamaDefaultModel }
+  GET  /api/ollama/models    -> local model names/sizes (Ollama mode only)
   GET  /api/me               -> login + tier + remaining budget (LB mode only)
   POST /api/search           -> { results, answer }  Google via Serper.dev
   POST /api/session          -> proxies <LB>/session: a grant, or a queue ticket
@@ -52,6 +53,13 @@ import limiter
 logger = logging.getLogger("s2s.search")
 
 SERPER_KEY = os.environ.get("SERPER_API_KEY", "").strip()
+OLLAMA_ENABLED = os.environ.get("S2S_OLLAMA_ENABLED", "0").strip() == "1"
+OLLAMA_URL = (os.environ.get("S2S_OLLAMA_URL", "").strip() or "http://127.0.0.1:11434").rstrip("/")
+if OLLAMA_URL and not OLLAMA_URL.startswith(("http://", "https://")):
+    OLLAMA_URL = f"http://{OLLAMA_URL}"
+if OLLAMA_URL.endswith("/v1"):
+    OLLAMA_URL = OLLAMA_URL[:-3].rstrip("/")
+OLLAMA_DEFAULT_MODEL = os.environ.get("S2S_LLM_MODEL", "").strip()
 # Speech-to-speech load balancer URL. When set, the browser POSTs /api/session
 # (which proxies <lb>/session here, server-side) and connects to the URL the LB
 # returns (the original flow). The LB address itself is never sent to the browser.
@@ -113,7 +121,47 @@ def config():
         "lb": bool(LOAD_BALANCER_URL),
         "allowDirect": not LOAD_BALANCER_URL,
         "auth": AUTH_ENABLED,
+        "ollama": OLLAMA_ENABLED,
+        "ollamaDefaultModel": OLLAMA_DEFAULT_MODEL if OLLAMA_ENABLED else None,
     }
+
+
+@app.get("/api/ollama/models")
+async def ollama_models():
+    """Return installed local Ollama models for the Settings picker."""
+    if not OLLAMA_ENABLED:
+        raise HTTPException(status_code=404, detail="Ollama model selection is disabled.")
+    try:
+        async with httpx.AsyncClient(timeout=httpx.Timeout(4.0, connect=1.5), trust_env=False) as http:
+            response = await http.get(f"{OLLAMA_URL}/api/tags")
+    except httpx.RequestError as exc:
+        logger.info("Ollama model list unavailable: %r", exc)
+        raise HTTPException(status_code=503, detail="Ollama is unreachable.") from exc
+    if response.status_code != 200:
+        logger.info("Ollama model list returned HTTP %s", response.status_code)
+        raise HTTPException(status_code=502, detail="Ollama model list request failed.")
+    try:
+        payload = response.json()
+    except ValueError as exc:
+        raise HTTPException(status_code=502, detail="Ollama returned an invalid model list.") from exc
+
+    raw_models = payload.get("models", []) if isinstance(payload, dict) else []
+    if not isinstance(raw_models, list):
+        raw_models = []
+    models = []
+    for item in raw_models:
+        if not isinstance(item, dict):
+            continue
+        name = item.get("name")
+        if not isinstance(name, str) or not name:
+            continue
+        size = item.get("size")
+        valid_size = isinstance(size, int) and not isinstance(size, bool) and size >= 0
+        models.append({"name": name, "size": size if valid_size else None})
+    return JSONResponse(
+        {"models": models, "defaultModel": OLLAMA_DEFAULT_MODEL or (models[0]["name"] if models else None)},
+        headers={"Cache-Control": "no-store"},
+    )
 
 
 @app.get("/api/me")

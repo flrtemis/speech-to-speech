@@ -256,6 +256,14 @@
                   <option value="Vivian">Vivian</option>
                 </select>
               </label>
+              <div class="field" id="ollama-model-field" hidden>
+                <span id="ollama-model-label">Ollama model</span>
+                <select id="ollama-model" disabled aria-labelledby="ollama-model-label" aria-describedby="ollama-model-status">
+                  <option value="">Loading local models…</option>
+                </select>
+                <small id="ollama-model-status" role="status" aria-live="polite">Installed models from this machine's Ollama.</small>
+                <button id="ollama-refresh" type="button" class="btn">Refresh model list</button>
+              </div>
             </div>
 
             <div class="field">

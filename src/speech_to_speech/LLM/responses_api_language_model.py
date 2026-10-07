@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import logging
+import os
 import time
 from collections.abc import Iterator
 from typing import Any, Optional
+from urllib.parse import urlsplit
 
 import httpx
 from nltk import sent_tokenize
@@ -78,18 +80,76 @@ class ResponsesApiModelHandler(BaseHandler[LLMIn, LLMOut]):
             self.request_timeout_s,
             connect=min(10.0, self.request_timeout_s),
         )
+        self.ollama_models = frozenset(
+            name.strip() for name in os.environ.get("S2S_OLLAMA_MODELS", "").split(",") if name.strip()
+        )
+        self.ollama_url = (os.environ.get("S2S_OLLAMA_URL", "").strip() or "http://127.0.0.1:11434").rstrip("/")
+        if self.ollama_url and not self.ollama_url.startswith(("http://", "https://")):
+            self.ollama_url = f"http://{self.ollama_url}"
+        if self.ollama_url.endswith("/v1"):
+            self.ollama_url = self.ollama_url[:-3].rstrip("/")
+        self.ollama_enabled = os.environ.get("S2S_OLLAMA_ENABLED", "0").strip() == "1"
+        parsed_base_url = urlsplit(base_url or "")
+        is_ollama_endpoint = parsed_base_url.hostname in {"localhost", "127.0.0.1", "::1"} and (
+            parsed_base_url.port == 11434
+        )
+        self.ollama_enabled = self.ollama_enabled or bool(self.ollama_models) or is_ollama_endpoint
 
         self.user_role = user_role
-        self.client = OpenAI(api_key=api_key, base_url=base_url)
+        http_client = httpx.Client(trust_env=False) if self.ollama_enabled else None
+        self.client = OpenAI(api_key=api_key, base_url=base_url, http_client=http_client)
+        self._ollama_models_refresh_at = 0.0
         self._extra_body = (
             {"chat_template_kwargs": {"enable_thinking": False}}
             if disable_thinking
             and base_url is not None
             and base_url != "https://api.openai.com/v1"  # Only for other than OpenAI Official Server
+            and not self.ollama_enabled
             else None
         )
         self.compactor = build_compactor(self._build_compaction_generate_fn()) if compact_history else None
         self.warmup()
+
+    def _refresh_ollama_models(self) -> None:
+        """Refresh the local allowlist when the browser selects a newly-added model."""
+        now = time.monotonic()
+        if now - getattr(self, "_ollama_models_refresh_at", 0.0) < 1.0:
+            return
+        self._ollama_models_refresh_at = now
+        try:
+            response = httpx.get(
+                f"{self.ollama_url}/api/tags",
+                timeout=httpx.Timeout(2.0, connect=1.0),
+                trust_env=False,
+            )
+            response.raise_for_status()
+            payload = response.json()
+        except (httpx.HTTPError, ValueError) as exc:
+            logger.warning("Could not refresh local Ollama model allowlist: %s", exc)
+            return
+        models = payload.get("models", []) if isinstance(payload, dict) else []
+        if isinstance(models, list):
+            self.ollama_models = frozenset(
+                item["name"]
+                for item in models
+                if isinstance(item, dict) and isinstance(item.get("name"), str) and item["name"]
+            )
+
+    def _model_for_runtime_config(self, runtime_config: Any) -> str:
+        """Route to a session model only if Ollama currently lists it as installed."""
+        if runtime_config is None:
+            return self.model_name
+        session = getattr(runtime_config, "session", None)
+        requested = getattr(session, "model", None)
+        if not isinstance(requested, str):
+            return self.model_name
+        allowed_models = getattr(self, "ollama_models", frozenset())
+        if requested in allowed_models:
+            return requested
+        if not getattr(self, "ollama_enabled", bool(allowed_models)):
+            return self.model_name
+        self._refresh_ollama_models()
+        return requested if requested in getattr(self, "ollama_models", frozenset()) else self.model_name
 
     def _turn_is_latest(self, turn_id: str | None, turn_revision: int | None) -> bool:
         return self.speculative_turns is None or self.speculative_turns.is_latest(turn_id, turn_revision)
@@ -177,7 +237,7 @@ class ResponsesApiModelHandler(BaseHandler[LLMIn, LLMOut]):
         output_tokens = 0
         try:
             api_response = self.client.responses.create(
-                model=self.model_name,
+                model=self._model_for_runtime_config(runtime_config),
                 input=active_chat.to_responses_api_chat(),
                 stream=self.stream,
                 extra_body=self._extra_body,

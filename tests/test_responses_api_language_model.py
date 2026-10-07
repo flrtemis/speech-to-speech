@@ -1,6 +1,6 @@
 import logging
 from types import SimpleNamespace
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 import httpx
 from openai import Stream
@@ -95,6 +95,10 @@ def _make_handler(*, disable_thinking=False, stream=True, cancel_scope=None):
     handler.request_timeout_s = 20.0
     handler.request_timeout = 20.0
     handler.disable_thinking = disable_thinking
+    handler.ollama_models = frozenset()
+    handler.ollama_enabled = False
+    handler.ollama_url = "http://127.0.0.1:11434"
+    handler._ollama_models_refresh_at = 0.0
     handler._extra_body = {"chat_template_kwargs": {"enable_thinking": False}} if disable_thinking else None
     handler.user_role = "user"
     handler.cancel_scope = cancel_scope
@@ -316,6 +320,72 @@ def test_no_disable_thinking_omits_extra_body():
     list(handler.process(_make_request("Hi")))
 
     assert captured.get("extra_body") is None
+
+
+def test_generate_uses_allowlisted_model_from_live_session_config():
+    handler = _make_handler()
+    handler.ollama_models = frozenset({"default-ollama", "chosen-ollama"})
+    runtime_config = _make_runtime_config()
+    runtime_config.session.model = "chosen-ollama"
+    chat = runtime_config.chat
+    chat.add_item(make_user_message("Hi"))
+    captured = {}
+
+    def fake_create(**kwargs):
+        captured.update(kwargs)
+        return _make_stream([_make_text_delta_event("Hello.")])
+
+    handler.client = SimpleNamespace(responses=SimpleNamespace(create=fake_create))
+    list(
+        handler._generate(
+            active_chat=chat.copy(),
+            original_chat=chat,
+            language_code=None,
+            gen=None,
+            runtime_config=runtime_config,
+            response=None,
+            optional_kwargs={},
+            turn_id=None,
+            turn_revision=None,
+            speech_stopped_at_s=None,
+        )
+    )
+
+    assert captured["model"] == "chosen-ollama"
+
+
+def test_generate_accepts_a_newly_installed_ollama_model_after_refresh():
+    handler = _make_handler()
+    handler.ollama_enabled = True
+    handler.ollama_models = frozenset({"default-ollama"})
+    runtime_config = SimpleNamespace(session=SimpleNamespace(model="newly-installed"))
+    tags_response = SimpleNamespace(
+        raise_for_status=lambda: None,
+        json=lambda: {"models": [{"name": "default-ollama"}, {"name": "newly-installed"}]},
+    )
+
+    with patch(
+        "speech_to_speech.LLM.responses_api_language_model.httpx.get",
+        return_value=tags_response,
+    ):
+        assert handler._model_for_runtime_config(runtime_config) == "newly-installed"
+
+
+def test_generate_ignores_uninstalled_session_model():
+    handler = _make_handler()
+    handler.ollama_enabled = True
+    handler.ollama_models = frozenset({"chosen-ollama"})
+    runtime_config = SimpleNamespace(session=SimpleNamespace(model="arbitrary-model"))
+    tags_response = SimpleNamespace(
+        raise_for_status=lambda: None,
+        json=lambda: {"models": [{"name": "chosen-ollama"}]},
+    )
+
+    with patch(
+        "speech_to_speech.LLM.responses_api_language_model.httpx.get",
+        return_value=tags_response,
+    ):
+        assert handler._model_for_runtime_config(runtime_config) == "test-model"
 
 
 def test_second_turn_flattens_assistant_history_for_responses():

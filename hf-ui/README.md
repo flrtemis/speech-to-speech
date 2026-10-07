@@ -99,6 +99,22 @@ no load balancer, no `/session` step. Set the URL in two ways:
 
 **Settings → Restart** reconnects with the current voice, instructions and URL.
 
+## Local Ollama model picker
+
+The repository's unified `./start.sh` launcher defaults to the local Ollama
+Responses API (`http://127.0.0.1:11434/v1`; Ollama 0.13.3 or newer). It
+discovers installed model tags through Ollama's local `/api/tags` endpoint and
+exposes them only through the same-origin `/api/ollama/models` route. In
+**Settings → Ollama model**, choose a model and press **Save**; a live session
+uses it on the next reply. The picker
+reads the current installed list; use **Refresh model list** after adding a model.
+The speech backend rechecks newly selected names against Ollama before routing.
+
+If Ollama is bound somewhere other than the default address, set
+`S2S_OLLAMA_URL=http://host:port` for the same `./start.sh` command. To use the
+cached Transformers language model instead, set
+`S2S_LLM_BACKEND=transformers` for that launch.
+
 ## Usage limits
 
 Conversation time is metered per UTC day by sign-in tier (see `limiter.py` /
@@ -143,6 +159,7 @@ Then open <http://localhost:7860/>, click the orb, allow the mic, talk.
 |-----|------|
 | Load balancer URL | Base URL of your S2S deployment. App POSTs `<lb>/session`. |
 | Voice | Qwen3-TTS speaker name (Aiden, Ryan, Dylan, Eric, Ono_Anna, Serena, Sohee, Uncle_Fu, Vivian) |
+| Ollama model | Installed local Ollama model; saved selection updates live sessions for the next reply |
 | Instructions | System prompt sent in `session.update` once the WS opens |
 
 LocalStorage keys are namespaced `s2s.ws.*` so this app's settings do
