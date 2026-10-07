@@ -104,10 +104,12 @@ no load balancer, no `/session` step. Set the URL in two ways:
 The repository's unified `./start.sh` launcher defaults to the local Ollama
 Responses API (`http://127.0.0.1:11434/v1`; Ollama 0.13.3 or newer). It
 discovers installed model tags through Ollama's local `/api/tags` endpoint and
-exposes them only through the same-origin `/api/ollama/models` route. In
-**Settings → Ollama model**, choose a model and press **Save**; a live session
-uses it on the next reply. The picker
-reads the current installed list; use **Refresh model list** after adding a model.
+exposes them only through the same-origin `/api/ollama/models` route. It picks
+the smallest non-embedding model as the startup default to reduce cold-load
+delay; **Settings → Ollama model** can switch it live. Press
+**Save** to apply the selection to the next reply. Use **Refresh model list**
+after adding a model. Ollama gets a 180-second cold-load timeout with automatic
+retries disabled; override it with `S2S_OLLAMA_REQUEST_TIMEOUT_S` if needed.
 The speech backend rechecks newly selected names against Ollama before routing.
 
 If Ollama is bound somewhere other than the default address, set

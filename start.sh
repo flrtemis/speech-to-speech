@@ -28,7 +28,7 @@ case "$LLM_BACKEND" in
         OLLAMA_MODELS="${S2S_OLLAMA_MODELS:-}"
         if [ -z "$OLLAMA_MODELS" ]; then
             printf 'Checking local Ollama models'
-            OLLAMA_MODELS="$(python3 -c 'import json,sys,urllib.request; op=urllib.request.build_opener(urllib.request.ProxyHandler({})); d=json.load(op.open(sys.argv[1], timeout=3)); print(",".join(m["name"] for m in d.get("models", []) if isinstance(m.get("name"), str) and m["name"]))' "$OLLAMA_URL/api/tags" 2>/dev/null || true)"
+            OLLAMA_MODELS="$(python3 "$SCRIPT_DIR/scripts/ollama_model_list.py" "$OLLAMA_URL/api/tags" 2>/dev/null || true)"
             echo ""
         fi
         if [ -z "$OLLAMA_MODELS" ]; then

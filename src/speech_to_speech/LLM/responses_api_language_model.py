@@ -96,8 +96,26 @@ class ResponsesApiModelHandler(BaseHandler[LLMIn, LLMOut]):
         self.ollama_enabled = self.ollama_enabled or bool(self.ollama_models) or is_ollama_endpoint
 
         self.user_role = user_role
-        http_client = httpx.Client(trust_env=False) if self.ollama_enabled else None
-        self.client = OpenAI(api_key=api_key, base_url=base_url, http_client=http_client)
+        if self.ollama_enabled:
+            # Ollama may need much longer than a cloud request to load a large
+            # local model into memory on the first call. Do not burn the timeout
+            # three times through the SDK's automatic retries.
+            self.request_timeout_s = max(
+                self.request_timeout_s,
+                float(os.environ.get("S2S_OLLAMA_REQUEST_TIMEOUT_S", "180")),
+            )
+            self.request_timeout = httpx.Timeout(
+                self.request_timeout_s,
+                connect=min(10.0, self.request_timeout_s),
+            )
+            self.client = OpenAI(
+                api_key=api_key,
+                base_url=base_url,
+                http_client=httpx.Client(trust_env=False),
+                max_retries=0,
+            )
+        else:
+            self.client = OpenAI(api_key=api_key, base_url=base_url)
         self._ollama_models_refresh_at = 0.0
         self._extra_body = (
             {"chat_template_kwargs": {"enable_thinking": False}}
@@ -164,6 +182,12 @@ class ResponsesApiModelHandler(BaseHandler[LLMIn, LLMOut]):
 
     def warmup(self) -> None:
         logger.info(f"Warming up {self.__class__.__name__}")
+        if self.ollama_enabled:
+            logger.info(
+                "Preparing local Ollama model %s; first load may take a while (timeout %.0fs)",
+                self.model_name,
+                self.request_timeout_s,
+            )
         start = time.time()
         self.client.responses.create(
             model=self.model_name,

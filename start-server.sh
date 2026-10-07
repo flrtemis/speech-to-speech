@@ -16,7 +16,8 @@
 #  Optional env overrides:
 #    S2S_LLM_BACKEND=ollama|transformers (default: ollama)
 #    S2S_OLLAMA_URL=http://127.0.0.1:11434
-#    S2S_LLM_MODEL=<installed Ollama model> (default: first installed model)
+#    S2S_LLM_MODEL=<installed Ollama model> (default: smallest non-embedding)
+#    S2S_OLLAMA_REQUEST_TIMEOUT_S=180 (warmup/turn timeout for Ollama)
 #    S2S_VENV=/path/to/.venv         pick a specific venv
 #    S2S_TTS_MODEL=Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice (or a local directory)
 #    S2S_TTS_BACKEND=ggml            use the local GGUF weights via qwentts.cpp
@@ -65,7 +66,7 @@ if [ "$LLM_BACKEND" = "ollama" ]; then
     export S2S_OLLAMA_BASE_URL="$OLLAMA_BASE_URL"
     OLLAMA_MODELS="${S2S_OLLAMA_MODELS:-}"
     if [ -z "$OLLAMA_MODELS" ]; then
-        OLLAMA_MODELS="$("$VENV/bin/python" -c 'import json,sys,urllib.request; op=urllib.request.build_opener(urllib.request.ProxyHandler({})); d=json.load(op.open(sys.argv[1], timeout=3)); print(",".join(m["name"] for m in d.get("models", []) if isinstance(m.get("name"), str) and m["name"]))' "$OLLAMA_URL/api/tags" 2>/dev/null || true)"
+        OLLAMA_MODELS="$("$VENV/bin/python" "$SCRIPT_DIR/scripts/ollama_model_list.py" "$OLLAMA_URL/api/tags" 2>/dev/null || true)"
     fi
     if [ -z "$OLLAMA_MODELS" ]; then
         echo "ERROR: no local Ollama models found at $OLLAMA_URL/api/tags." >&2
